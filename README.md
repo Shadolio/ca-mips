@@ -1,9 +1,9 @@
 # ca-mips
-This is a MIPS processor implementation that we are building as a final project in an academic course in our 6th semester at the GUC: Computer System Architecture (CSEN601).
+This is a MIPS processor implementation that we are building as a final project in our 6th semester at the GUC for the Computer System Architecture course (CSEN601).
 
 At the end of the project, we should (1) have an implementation of a pipelined MIPS processor, and (2) be able to test/simulate it with actual machine code instructions converted from MIPS assembly.
 
-However, we will start with a single-cycle implementation (without pipelining,) to make sure the components are working well, then we add pipeline registers to allow pipelined processing.
+However, we will start with a single-cycle implementation (without pipelining,) to make sure the components are working well, then we add pipeline registers to allow pipelining.
 
 We are going to implement this project in **Verilog.**
 
