@@ -68,3 +68,43 @@ r1
 !s90 -reportprogress|300|-work|ca_mips|-stats=none|C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\mips_proc.v|
 !i113 1
 R10
+vmux_2_1
+Z11 !s110 1522364113
+!i10b 1
+!s100 8F]FKlBiBN^gmC4_OJbNV2
+IQbh5_V3m]L^Z6D>cNkf:<0
+R1
+R2
+Z12 w1522364087
+Z13 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v
+Z14 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v
+L0 1
+R6
+r1
+!s85 0
+31
+Z15 !s108 1522364113.000000
+Z16 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v|
+Z17 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v|
+!i113 1
+Z18 o-work work
+vmux_2_1_tb
+R11
+!i10b 1
+!s100 >1CbCjF>JLgT_KKf;W3dK1
+IWZ<PJiINV;14foDc?1`hS3
+R1
+R2
+R12
+R13
+R14
+L0 10
+R6
+r1
+!s85 0
+31
+R15
+R16
+R17
+!i113 1
+R18
