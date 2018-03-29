@@ -5,7 +5,7 @@ At the end of the project, we should (1) have an implementation of a pipelined M
 
 However, we will start with a single-cycle implementation (without pipelining,) to make sure the components are working well, then we add pipeline registers to allow pipelined processing.
 
-As MET students, we are going to implement this in **Verilog.** *Networks students have the option of building & simulating in LogiSim, which we used in the 4th semester to simulate a Basic Computer in the Computer Organisation and System Programming course (CSEN402).*
+We are going to implement this project in **Verilog.**
 
 ### Instruction set architecture (ISA)
 The processor should support the following MIPS instructions only:
