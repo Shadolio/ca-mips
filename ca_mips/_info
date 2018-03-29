@@ -9,37 +9,57 @@ z2
 cModel Technology
 dC:/altera_lite/15.1
 vbyte_addressable_memory
-!s110 1522356386
+Z0 !s110 1522362739
 !i10b 1
-!s100 RYDRHVT5^eSVDSlZdj4z@1
-Ij>zm;80Z3<@1>keHUeZEU0
-Z0 VDg1SIo80bB@j0V0VzS_@n1
-Z1 dC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips
-w1522356380
-8C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\byte_addressable_memory.v
-FC:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\byte_addressable_memory.v
+!s100 SENfgz7IcIPKP5Bk5ZBG80
+I=zLOB6cli[]RYYcZNJ>Fi3
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+Z2 dC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips
+Z3 w1522362733
+Z4 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v
+Z5 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v
 L0 1
-Z2 OV;L;10.4b;61
+Z6 OV;L;10.4b;61
 r1
 !s85 0
 31
-!s108 1522356386.000000
-!s107 C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\byte_addressable_memory.v|
-!s90 -reportprogress|300|-work|ca_mips|C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\byte_addressable_memory.v|
+Z7 !s108 1522362739.000000
+Z8 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v|
+Z9 !s90 -reportprogress|300|-work|ca_mips|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v|
 !i113 1
-Z3 o-work ca_mips
+Z10 o-work ca_mips
+vbyte_addressable_memory_tb
+R0
+!i10b 1
+!s100 S?KcFT_D>DJGm7G`ff_Gn1
+IPS4EKR0=XzcVX?cbf7DYh0
+R1
+R2
+R3
+R4
+R5
+L0 36
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
 vmips_proc
 !s110 1522355425
 !i10b 1
 !s100 ?T<Ik<ERk8YPZabfX?f601
 IB8>2HHZCoi?;^U7_]M?gE2
-R0
 R1
+R2
 w1522355410
 8C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\mips_proc.v
 FC:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\mips_proc.v
 L0 1
-R2
+R6
 r1
 !s85 0
 31
@@ -47,4 +67,4 @@ r1
 !s107 C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\mips_proc.v|
 !s90 -reportprogress|300|-work|ca_mips|-stats=none|C:\Users\shadi\Documents\GUC\CSEN601 (CA)\Project\ca-mips\mips_proc.v|
 !i113 1
-R3
+R10
