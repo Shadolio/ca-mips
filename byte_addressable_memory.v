@@ -5,7 +5,7 @@ module byte_addressable_memory (wordOut, wordIn, address, memRead, memWrite, clk
 	input [31:0] wordIn;
 	output reg [31:0] wordOut;
 
-	reg [7:0] memory[0 : 2 ** 32 - 1];
+	reg [7:0] memory[0 : 65535];
 
 	// TODO: Support load half word
 
@@ -14,18 +14,18 @@ module byte_addressable_memory (wordOut, wordIn, address, memRead, memWrite, clk
 		// If both memRead and memWrite signals are 1, do the read operation only.
 		if(memRead) begin
 
-			wordOut[31:24] = memory[address];
-			wordOut[23:16] = memory[address + 1];
-			wordOut[15:8] = memory[address + 2];
-			wordOut[7:0] = memory[address + 3];
+			wordOut[31:24] <= memory[address];
+			wordOut[23:16] <= memory[address + 1];
+			wordOut[15:8] <= memory[address + 2];
+			wordOut[7:0] <= memory[address + 3];
 
 		end
 		else if(memWrite) begin
 
-			memory[address] = wordIn[31:24];
-			memory[address + 1] = wordIn[23:16];
-			memory[address + 2] = wordIn[15:8];
-			memory[address + 3] = wordIn[7:0];
+			memory[address] <= wordIn[31:24];
+			memory[address + 1] <= wordIn[23:16];
+			memory[address + 2] <= wordIn[15:8];
+			memory[address + 3] <= wordIn[7:0];
 
 		end
 	end

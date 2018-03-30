@@ -1,1 +1,9 @@
+{C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v}
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module mux_2_1
+-- Compiling module mux_2_1_tb
 
+Top level modules:
+	mux_2_1_tb
+
+} {} {}}
