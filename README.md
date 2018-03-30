@@ -11,7 +11,7 @@ We are going to implement this project in **Verilog.**
 The processor should support the following MIPS instructions only:
 - **Arithmetic:** add, sub, addi
 - **Load/Store:** lw, sw, lh, lhu
-- **Logic:** and, or, sll, srl, and, or
+- **Logic:** and, or, sll, srl
 - **Control flow:** beq
 - **Comparison:** slt, sltu
 
