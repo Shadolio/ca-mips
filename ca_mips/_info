@@ -8,59 +8,21 @@ z2
 !i10f 100
 cModel Technology
 dC:/altera_lite/15.1
-vbyte_addressable_memory
+vmips_proc
 !i10b 1
 Z0 VDg1SIo80bB@j0V0VzS_@n1
 r1
 !s85 0
 31
-!s100 76k<FL74Lg`:5^>2jH@Q:0
-I8D18VJ>G20TXm8?QiI0WW1
-Z1 dC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips
-Z2 w1522397175
-Z3 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v
-Z4 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v
-L0 1
-Z5 OV;L;10.4b;61
-Z6 !s108 1522397186.000000
-Z7 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v|
-Z8 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/byte_addressable_memory.v|
-!i113 1
-Z9 o-work work
-vbyte_addressable_memory_tb
-!i10b 1
-R0
-r1
-!s85 0
-31
-!s100 S?KcFT_D>DJGm7G`ff_Gn1
-IYXKh:]e@2m?e11EJSS;F[1
-R1
-R2
-R3
-R4
-L0 36
-R5
-R6
-R7
-R8
-!i113 1
-R9
-vmips_proc
-!i10b 1
-R0
-r1
-!s85 0
-31
 !s100 ?T<Ik<ERk8YPZabfX?f601
 Im5W2_?L0Pe6nC0K=oFzdM3
-R1
-w1522393148
+Z1 dC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips
+w1522620635
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 L0 1
-R5
-!s108 1522393215.000000
+Z2 OV;L;10.4b;61
+!s108 1522620655.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !s90 -reportprogress|300|-work|ca_mips|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !i113 1
@@ -71,35 +33,75 @@ R0
 r1
 !s85 0
 31
-!s100 8F]FKlBiBN^gmC4_OJbNV2
-IQbh5_V3m]L^Z6D>cNkf:<0
+!s100 7PzbK1P]>c^^3n=Hn1A@60
+Id5fNBNlZFR[ZC3FS2J][Q1
 R1
-Z10 w1522364087
-Z11 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v
-Z12 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v
+Z3 w1522621168
+Z4 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
+Z5 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
 L0 1
-R5
-Z13 !s108 1522393472.000000
-Z14 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v|
-Z15 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mux_2_1.v|
+R2
+Z6 !s108 1522621177.000000
+Z7 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
+Z8 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
 !i113 1
-R9
+Z9 o-work work
 vmux_2_1_tb
 !i10b 1
 R0
 r1
 !s85 0
 31
-!s100 >1CbCjF>JLgT_KKf;W3dK1
-IWZ<PJiINV;14foDc?1`hS3
+!s100 HJA<DVOzGXRzg:zBRH:Gc0
+IV[c776V4>l3_h4@mDY:k51
+R1
+R3
+R4
+R5
+L0 10
+R2
+R6
+R7
+R8
+!i113 1
+R9
+vram_32bitAddr
+!i10b 1
+R0
+r1
+!s85 0
+31
+!s100 OS6PPU4Z?KK]<cl7OEAZ13
+IWzOBhP@1i2LIjQ=^NMjVN1
+R1
+Z10 w1522620114
+Z11 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
+Z12 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
+L0 3
+R2
+Z13 !s108 1522620117.000000
+Z14 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
+Z15 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
+!i113 1
+R9
+nram_32bit@addr
+vram_32bitAddr_tb
+!i10b 1
+R0
+r1
+!s85 0
+31
+!s100 UQX9Z^:I9j3n4Rg=g`cUH1
+IbZ^T_F]6CiKWU`hKS;IR61
 R1
 R10
 R11
 R12
-L0 10
-R5
+L0 45
+R2
 R13
 R14
 R15
 !i113 1
 R9
+nram_32bit@addr_tb
