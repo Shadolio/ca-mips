@@ -58,7 +58,7 @@ R1
 R3
 R4
 R5
-Z10 L0 10
+L0 10
 R2
 R6
 R7
@@ -66,84 +66,42 @@ R8
 !i113 1
 R9
 vram_32bitAddr
-Z11 !s110 1522622351
 !i10b 1
-!s100 OS6PPU4Z?KK]<cl7OEAZ13
-IWzOBhP@1i2LIjQ=^NMjVN1
 R0
-R1
-Z12 w1522621421
-Z13 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
-Z14 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
-L0 3
-R2
 r1
 !s85 0
 31
-Z15 !s108 1522622351.000000
-Z16 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
-Z17 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
+!s100 OS6PPU4Z?KK]<cl7OEAZ13
+IWzOBhP@1i2LIjQ=^NMjVN1
+R1
+Z10 w1522621421
+Z11 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
+Z12 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v
+L0 3
+R2
+Z13 !s108 1522622351.000000
+Z14 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
+Z15 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram_32bitAddr.v|
 !i113 1
 R9
 nram_32bit@addr
 vram_32bitAddr_tb
-R11
 !i10b 1
-!s100 UQX9Z^:I9j3n4Rg=g`cUH1
-IbZ^T_F]6CiKWU`hKS;IR61
 R0
-R1
-R12
-R13
-R14
-L0 45
-R2
 r1
 !s85 0
 31
+!s100 UQX9Z^:I9j3n4Rg=g`cUH1
+IbZ^T_F]6CiKWU`hKS;IR61
+R1
+R10
+R11
+R12
+L0 45
+R2
+R13
+R14
 R15
-R16
-R17
 !i113 1
 R9
 nram_32bit@addr_tb
-vwords_memory
-Z18 !s110 1522622354
-!i10b 1
-!s100 Z923nf5EEDz=z`dRM9S[E1
-I?Am3fE@S`_=Q_lSneU=ha1
-R0
-R1
-Z19 w1522622340
-Z20 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/words_memory.v
-Z21 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/words_memory.v
-L0 1
-R2
-r1
-!s85 0
-31
-Z22 !s108 1522622354.000000
-Z23 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/words_memory.v|
-Z24 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/words_memory.v|
-!i113 1
-R9
-vwords_memory_tb
-R18
-!i10b 1
-!s100 a;Mn?lnkIK`WEjV?8Z9jd3
-Ig^Q_h2WRX[UJP0WK[JVWT3
-R0
-R1
-R19
-R20
-R21
-R10
-R2
-r1
-!s85 0
-31
-R22
-R23
-R24
-!i113 1
-R9
