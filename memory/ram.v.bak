@@ -5,7 +5,7 @@ module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
 	input [31:0] address, dataIn;
 	output reg [31:0] dataOut;
 
-	parameter memLimit = 27'd134217727; // currently supports 2^27 addresses
+	parameter memLimit = 32'd134217727; // currently supports 2^27 addresses
 
 	reg [7:0] memory[memLimit : 0];
 
@@ -44,12 +44,12 @@ module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
 endmodule
 
 
-module ram_32bitAddr_tb ();
+module ram_tb ();
 	reg clk, read, write, word, sign;
 	reg [31:0] address, wordIn;
 	wire [31:0] wordOut;
 
-	ram_32bitAddr testRam (wordOut, wordIn, address, read, write, word, sign, clk);
+	ram testRam (wordOut, wordIn, address, read, write, word, sign, clk);
 
 	initial begin
 		
