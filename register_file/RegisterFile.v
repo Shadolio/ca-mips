@@ -1,4 +1,4 @@
-module RegisterFile(clk,RegWriteSignal,ReadReg1,ReadReg2,WriteReg,WriteData,ReadData1,ReadData2);
+module RegisterFile(ReadData1,ReadData2,ReadReg1,ReadReg2,WriteReg,WriteData,RegWriteSignal,clk);
     input [4:0] ReadReg1;
     input [4:0] ReadReg2;
     input [4:0] WriteReg;
