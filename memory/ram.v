@@ -1,11 +1,13 @@
 // word == 0: half word (2 bytes), 1: full word (4 bytes)
 // sign == 0: unsigned, 1: signed
-module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
+module ram (dataOut, dataIn, address, read, write, word, sign, clk);
 	input clk, read, write, word, sign;
 	input [31:0] address, dataIn;
 	output reg [31:0] dataOut;
 
-	reg [7:0] memory[0 : 65535];
+	parameter memLimit = 32'd134217727; // currently supports 2^27 addresses
+
+	reg [7:0] memory[memLimit : 0];
 
 	always @(posedge clk) begin
 		// Read or write according to the signal, but not both.
@@ -15,13 +17,13 @@ module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
 			dataOut[7:0] <= memory[address];
 			dataOut[15:8] <= memory[address + 1];
 			
-			if(word == 1) begin
+			if(word == 1) begin // Full word (4 bytes)
 
 				dataOut[23:16] <= memory[address + 2];
 				dataOut[31:24] <= memory[address + 3];
 
 			end
-			else if(word == 0) begin
+			else if(word == 0) begin // Half words (2 bytes only)
 
 				if(sign == 0) dataOut[31:16] <= 16'd0;
 				else if(sign == 1) dataOut[31:16] <= { 16 { dataOut[15] } };
@@ -42,12 +44,12 @@ module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
 endmodule
 
 
-module ram_32bitAddr_tb ();
+module ram_tb ();
 	reg clk, read, write, word, sign;
 	reg [31:0] address, wordIn;
 	wire [31:0] wordOut;
 
-	ram_32bitAddr testRam (wordOut, wordIn, address, read, write, word, sign, clk);
+	ram testRam (wordOut, wordIn, address, read, write, word, sign, clk);
 
 	initial begin
 		
@@ -76,7 +78,7 @@ module ram_32bitAddr_tb ();
 		#10 clk <= 1;
 
 		#10 $display("Value at address %d is now: %d", address, wordOut);
-		clk <= 0;
+		#10 clk <= 0;
 		
 		word <= 0;
 		#10 clk <= 1;
