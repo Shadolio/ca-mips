@@ -106,3 +106,24 @@ R15
 R16
 !i113 1
 R9
+vRegisterFile
+!s110 1522699296
+!i10b 1
+!s100 1U9XdAmbE<eP2eV:JFlMg1
+Io202d?cL?3Bi<SdSaQ8NM0
+R0
+R1
+w1522699239
+8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
+FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
+L0 1
+R2
+r1
+!s85 0
+31
+!s108 1522699296.000000
+!s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
+!i113 1
+R9
+n@register@file
