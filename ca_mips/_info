@@ -9,20 +9,21 @@ z2
 cModel Technology
 dC:/altera_lite/15.1
 vmips_proc
+!s110 1522693865
 !i10b 1
+!s100 U;jn=F59VKTSJ`?i6]57E1
+IOSB>^cNHT:INMMmT6og:;3
 Z0 VDg1SIo80bB@j0V0VzS_@n1
-r1
-!s85 0
-31
-!s100 ?T<Ik<ERk8YPZabfX?f601
-Im5W2_?L0Pe6nC0K=oFzdM3
 Z1 dC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips
-w1522620635
+w1522693829
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 L0 1
 Z2 OV;L;10.4b;61
-!s108 1522620655.000000
+r1
+!s85 0
+31
+!s108 1522693865.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !s90 -reportprogress|300|-work|ca_mips|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !i113 1

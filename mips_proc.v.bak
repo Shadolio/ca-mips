@@ -1,35 +1,22 @@
 module mips_proc ();
 
-	reg clk, read, write, word, sign;
-	reg [31:0] address, wordIn;
-	wire [31:0] wordOut;
-
-	ram_32bitAddr testRam (wordOut, wordIn, address, read, write, word, sign, clk);
+	reg clk;
+	reg [15:0] cycleNo;
 
 	initial begin
-		#10 $display("MIPS processor starting...");
-		#10 $display("Welcome to MIPS processor!");
-
+		cycleNo <= 0;
 		clk <= 0;
-		address <= 32'd400;
-		wordIn <= 32'd176;
-		read <= 0;
-		write <= 1;
-
-		#10 clk <= 1;
-
-		#10 clk <= 0;
-		read <= 1;
-		write <= 0;
-		word <= 0;
-		sign <= 0;
-
-		#10 clk <= 1;
-
-		#10 $display("Value at address %d is: %d", address, wordOut);
-		clk <= 0;
-		
-
+		forever #5 clk = ~clk;
 	end
+
+	initial begin
+		$display("MIPS processor starting...");
+		$display("Welcome to MIPS processor!");
+
+		$monitor("Cycle %d", cycleNo);
+	end
+
+	always @(posedge clk)
+		cycleNo = cycleNo + 1;
 
 endmodule
