@@ -16,6 +16,8 @@ module mips_proc ();
 		$monitor("Cycle %d", cycleNo);
 	end
 
+	// [ OUR COMPONENTS WILL BE ADDED HERE IN INTEGRATION ]
+
 	always @(posedge clk)
 		cycleNo = cycleNo + 1;
 

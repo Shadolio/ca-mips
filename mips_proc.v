@@ -6,7 +6,7 @@ module mips_proc ();
 	initial begin
 		cycleNo <= 0;
 		clk <= 0;
-		forever #5 clk = ~clk;
+		forever #5 clk <= ~clk;
 	end
 
 	initial begin
