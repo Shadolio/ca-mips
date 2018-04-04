@@ -5,7 +5,7 @@ module ram (dataOut, dataIn, address, read, write, word, sign, clk);
 	input [31:0] address, dataIn;
 	output reg [31:0] dataOut;
 
-	parameter memLimit = 32'd134217727; // currently supports 2^27 addresses
+	parameter memLimit = 8'd255; // currently supports 2^27 addresses
 
 	reg [7:0] memory[memLimit : 0];
 
@@ -54,7 +54,7 @@ module ram_tb ();
 	initial begin
 		
 		clk <= 0;
-		address <= 32'd400;
+		address <= 32'd200;
 		wordIn <= 32'hF00FF176;
 		word <= 1;
 		sign <= 1;

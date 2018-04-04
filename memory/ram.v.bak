@@ -1,11 +1,11 @@
 // word == 0: half word (2 bytes), 1: full word (4 bytes)
 // sign == 0: unsigned, 1: signed
-module ram_32bitAddr (dataOut, dataIn, address, read, write, word, sign, clk);
+module ram (dataOut, dataIn, address, read, write, word, sign, clk);
 	input clk, read, write, word, sign;
 	input [31:0] address, dataIn;
 	output reg [31:0] dataOut;
 
-	parameter memLimit = 32'd134217727; // currently supports 2^27 addresses
+	parameter memLimit = 8'd255; // currently supports 2^27 addresses
 
 	reg [7:0] memory[memLimit : 0];
 
