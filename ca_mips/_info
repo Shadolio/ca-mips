@@ -150,6 +150,27 @@ R10
 R11
 !i113 1
 R3
+vPC
+!s110 1522852806
+!i10b 1
+!s100 UPUDFgi64[Y6^8a66ogzM2
+Ij98S8aBO:[QN>^fmdV=l`0
+R0
+R1
+w1522852781
+8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v
+FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v
+L0 1
+R2
+r1
+!s85 0
+31
+!s108 1522852806.000000
+!s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v|
+!i113 1
+R3
+n@p@c
 vram
 Z12 !s110 1522850995
 !i10b 1

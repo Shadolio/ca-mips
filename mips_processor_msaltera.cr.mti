@@ -1,9 +1,1 @@
-{C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v}
-Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
--- Compiling module ram
--- Compiling module ram_tb
 
-Top level modules:
-	ram_tb
-
-} {} {}}
