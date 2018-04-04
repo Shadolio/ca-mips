@@ -37,6 +37,27 @@ module ram (dataOut, dataIn, address, write, word, sign, clk);
 
 	end
 
+	/*always @(posedge clk) begin
+		if(read) begin
+
+			dataOut[7:0] <= m0Ready;
+			dataOut[15:8] <= m1Ready;
+
+			if(word == 1) begin // Full word (4 bytes)
+
+				dataOut[23:16] <= m2Ready;
+				dataOut[31:24] <= m3Ready;
+
+			end
+			else if(word == 0) begin // Half words (2 bytes only)
+
+				if(sign == 0) dataOut[31:16] <= 16'd0;
+				else if(sign == 1) dataOut[31:16] <= { 16 { m1Ready[7] } };
+
+			end
+		end
+	end*/
+
 	// WRITE -- needs a 'write' signal to be active when the positive edge of the clock comes.
 	always @(posedge clk) begin
 		if(write) begin
