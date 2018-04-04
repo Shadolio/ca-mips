@@ -9,7 +9,7 @@ module PC(result, write, nextIntruction, reset, clk);
 		result <= 0;
 	end*/
 
-	always @(posedge clk) begin
+	always @(posedge clk, posedge reset) begin
 
 		if (reset)
 			result <= 0;  //raga3 el pc lel initial value

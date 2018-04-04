@@ -1,1 +1,8 @@
+{C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v}
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module program_counter
 
+Top level modules:
+	program_counter
+
+} {} {}}

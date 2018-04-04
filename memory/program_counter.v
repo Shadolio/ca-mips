@@ -1,4 +1,4 @@
-module PC(result, write, nextIntruction, reset, clk);
+module program_counter(result, write, nextIntruction, reset, clk);
 	input clk;
 	input write; // law write = 1, kda ma3naha te2dar t7ot 7aga fl PC
 	input reset;  //law reset = 1, then raga3 el PC b zero mn el awel
