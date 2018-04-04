@@ -11,6 +11,7 @@ initial
 begin
 	InputData1 = 32'b11111111111111111111111111111111;
 	InputData2 = 32'b00000000000000000000000000000001;
+
 	ALU_Control = 1;
 	#10;
 	$display("%b  %b \n",ALU_Result,Zero);

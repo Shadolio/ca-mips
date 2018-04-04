@@ -1,1 +1,12 @@
+module ShiftLeft2(PostShift,PreShift);
+input [31:0]PreShift;
+output [31:0]PostShift;
 
+/*always @ (PreShift)
+begin
+	PostShift = PreShift << 2;
+end*/
+
+assign PostShift = PreShift << 2;
+
+endmodule
