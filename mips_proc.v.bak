@@ -12,7 +12,7 @@ module mips_proc ();
 	// Instruction Memory wires
 	wire [31:0] instruction, instrAddr;
 	reg [31:0] instrIn;
-	reg instrWrite;
+	reg instrWrite, instrRead;
 
 	// Instruction Decode: Take certain parameters/fields from the 32-bit instruction
 	wire [5:0] instrOpCode, instrFunct;
@@ -64,10 +64,10 @@ module mips_proc ();
 
 	// MAIN COMPONENTS
 	program_counter	PC (pcValue, pcWrite, pcNext, pcReset, clk);
-	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, 1'b1, 1'bx, clk);
+	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, instrRead, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
 	ALU		alu (aluZero, aluResult, regData1, aluOprd2, aluOp);
-	ram		data_mem (memData, regData2, aluResult, memWrite, loadFullWord, loadSigned, clk);
+	ram		data_mem (memData, regData2, aluResult, memWrite, memRead, loadFullWord, loadSigned, clk);
 
 	// [ ADD HERE: Pipeline registers ]
 
@@ -84,18 +84,20 @@ module mips_proc ();
 	// Main() method
 	initial begin
 
-		$display("MIPS processor simulation starting...");
+		$display("Welcome to MIPS processor!");
+		$display("MIPS processor simulation initializing...");
 		initializing <= 1;
 
-		// Put program instructions in a temp array, to be loaded to instruction memory by a loop.
+		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
 		program[0] <= 32'h00008020; // add $s0, $0, $0
 		program[1] <= 32'h02108020; // add $s0, $s0, $s0
 
 		instrWrite <= 1;
+		instrRead <= 0;
 		pcReset <= 1; // Do this here to gain advantage of the waiting time in the loop
-		#5;
+		#5; // The wait is necessary to recognise the instruction write signals
 
-		// Initialise instruction memory with test program
+		// Load the program to the instruction memory
 		for(instrI = 0; instrI < programLength; instrI = instrI + 1) begin
 
 			instrIn <= program[instrI];
@@ -105,27 +107,31 @@ module mips_proc ();
 			#5 clk <= 0;
 		end
 
-		// Initialise clk and cycleNo variables
-		cycleNo <= 0;
-		clk <= 0;
-		pcReset <= 0;
-		pcWrite <= 1;
-		initializing <= 0;
+		// Reset clk and cycleNo variables
+		cycleNo <= 0;		// Initialize cycleNo, a tracking variable
+		clk <= 0;		// Make sure the CLK is 0 (if didn't enter the loop, it'd be StX)
+		instrWrite <= 0;	// We already loaded the program, nothing will be loaded here again.
+		instrRead <= 1;		// Now, allow control unit and rest of data path to execute.
+		pcReset <= 0;		// We just set PC to 0 and now we allow it to change.
+		pcWrite <= 1;		// Allow pcNext to be written to PC at next clock edge.
+		initializing <= 0;	// Now, we are done initializing the processor.
 
-		// Simulate some control signals until control unit is integrated
+		$display("MIPS processor simulation starting...");
+
+		// Simulate some control signals (instead of control unit)
 		branch <= 0;
 		regDst <= 1;
 		aluSrc <= 0;
+		memRead <= 1;
 		memToReg <= 0;
 		regWrite <= 1;
 
-		$display("Welcome to MIPS processor!");
-
 		$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
-		// START CLOCK GENERATOR
+		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
 		forever #5 clk <= ~clk;
 
+		// TODO: At the end, display the values of the whole register file and Data Memory
 	end
 
 	always @(posedge clk)
