@@ -75,9 +75,12 @@ module mips_proc ();
 	ALU_Controller aluControl (aluOp, instrOpCode, instrFunct);
 
 	// Program initialising and tracking
-	reg [2:0] instrI;
-	reg [31:0] program [8:0];
-	parameter programLength = 3'd2;
+	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM TO LOAD -- SPECIFIED IN initial BLOCK BELOW.
+	// -----------------------------------
+	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
+	reg [31:0] program [8:0];	// 3. SHOULD BE COMPATIBLE WITH instrI.
+	parameter programLength = 3'd2;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	// -----------------------------------
 
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? (instrI * 4) : 32'dx;
 
@@ -88,9 +91,12 @@ module mips_proc ();
 		$display("MIPS processor simulation initializing...");
 		initializing <= 1;
 
+		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
 		program[0] <= 32'h20100002; // add $s0, $0, $0
 		program[1] <= 32'h22100003; // add $s0, $s0, $s0
+		// ------------------------------------------------------
+		// REMEMBER: IF YOU CHANGE THE NUMBER OF INSTRUCTIONS IN THE PROGRAM, CHANGE THE PARAMETERS ABOVE!! (instrI, programLength, program)
 
 		instrWrite <= 1;
 		instrRead <= 0;
