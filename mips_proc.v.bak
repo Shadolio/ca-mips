@@ -89,8 +89,8 @@ module mips_proc ();
 		initializing <= 1;
 
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
-		program[0] <= 32'h00008020; // add $s0, $0, $0
-		program[1] <= 32'h02108020; // add $s0, $s0, $s0
+		program[0] <= 32'h20100002; // add $s0, $0, $0
+		program[1] <= 32'h22100003; // add $s0, $s0, $s0
 
 		instrWrite <= 1;
 		instrRead <= 0;
@@ -120,8 +120,8 @@ module mips_proc ();
 
 		// Simulate some control signals (instead of control unit)
 		branch <= 0;
-		regDst <= 1;
-		aluSrc <= 0;
+		regDst <= 0;
+		aluSrc <= 1;
 		memRead <= 1;
 		memToReg <= 0;
 		regWrite <= 1;
@@ -132,6 +132,36 @@ module mips_proc ();
 		forever #5 clk <= ~clk;
 
 		// TODO: At the end, display the values of the whole register file and Data Memory
+
+		/*
+		One way for the register file:
+			Monitor the wire of ReadData1 or ReadData2.
+			Re-initialize the Instruction Memory with 32 instructions of:
+				"add $0, $0, {$0-$31}".
+			(This will cause the value of the RT register to be readable at ReadData2,
+				so we can read it.)
+		Another way:
+			Simply, do the same but read two registers in one instructions.
+			Example: add $0, $0, $1 .. add $0, $2, $3 .. add $0, $4, $5 ...
+				This will get one register at ReadData1 and another on ReadData2.
+				Despite the ALU adding them and trying to put them in $0,
+					we achieved the target of showing their values on the wires.
+		Third way:
+			Instead of achieving this by putting instructions in the Instruction Memory,
+				we can multiplex input to the register file,
+				to give it our own address instead of addresses from the datapath.
+				(Similar to what we did when initializing Instruction Memory.)
+
+		-------------
+		The advantage of the first two ways are:
+			1) Using existing infrastructure.
+			2) We initialized the Instruction Memory before, so we can apply same method.
+			3) We avoid complexity of more multiplexing and simulating the entire datapath.
+		The advantage of the third way:
+			1) We have full control over the register file at that time.
+			2) We can easily change addresses (one or two) and observe the new value immediately.
+		*/
+
 	end
 
 	always @(posedge clk)
