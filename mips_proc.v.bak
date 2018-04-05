@@ -5,7 +5,8 @@ module mips_proc ();
 	reg [15:0] cycleNo;
 
 	// Control unit wires (output signals)
-	reg branch, regDst, aluSrc;
+	reg branch, regDst, regWrite, aluSrc, memToReg;
+	reg memWrite, memRead, loadFullWord, loadSigned;
 
 	// Instruction Memory wires
 	wire [31:0] instruction;
@@ -28,12 +29,11 @@ module mips_proc ();
 
 	assign instrImm = instruction[15:0];
 
-	SignExtender offsetSignExtender (immOffset32bits, instrImm, 0);
+	SignExtender offsetSignExtender (immOffset32bits, instrImm, 1'b0);
 
 	// Register File wires
 	wire [31:0] regData1, regData2, writeData;
 	wire [4:0] readReg1, readReg2, writeReg;
-	reg regWrite;
 
 	assign readReg1 = instrRs;
 	assign readReg2 = instrRt;
@@ -45,6 +45,12 @@ module mips_proc ();
 	wire [3:0] aluOp;
 
 	assign aluOprd2 = (aluSrc == 0) ? regData2 : (aluSrc == 1) ? immOffset32bits : 32'dx;
+
+	// Data Memory wires
+	wire [31:0] memData;
+
+	// Write Back: Assign writeData of registerFile to either Data Memory or ALU directly
+	assign writeData = (memToReg == 1) ? memData : (memToReg == 0) ? aluResult : 32'dx;
 
 	// PC wires
 	wire [31:0] pcValue, pcNext, pcPlus4, pcOffsetNextInst;
@@ -60,10 +66,12 @@ module mips_proc ();
 	ram		instr_mem (instruction, instrIn, pcValue, instrWrite, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
 	ALU		alu (aluZero, aluResult, regData1, aluOprd2, aluOp);
+	ram		data_mem (memData, regData2, aluResult, memWrite, loadFullWord, loadSigned, clk);
 
 	// [ ADD HERE: Pipeline registers ]
 
 	// [ ADD HERE: Control Unit ]
+	ALU_Controller aluControl (aluOp, instrOpCode, instrFunct);
 
 	// Main() method
 	initial begin
@@ -76,10 +84,11 @@ module mips_proc ();
 		branch <= 0;
 		regDst <= 1;
 		aluSrc <= 0;
+		memToReg <= 0;
 		regWrite <= 1;
 
 		// TODO: Load instruction(s) to memory to be executed.
-		instrIn <= 32'h02128020;
+		instrIn <= 32'h00008020; // add $s0, $0, $0
 		instrWrite <= 1;
 
 		$display("MIPS processor starting...");
@@ -90,10 +99,9 @@ module mips_proc ();
 
 	end
 
-	initial $monitor("Cycle %d", cycleNo);
-
-	initial $monitor("PC: %d", pcValue);
-	initial $monitor("current instruction: %h", instruction);
+	initial begin
+		$monitor("Cycle %d -- PC: %d, current instruction: %h", cycleNo, pcValue, instruction);
+	end
 
 	always @(posedge clk)
 		cycleNo = cycleNo + 1;
