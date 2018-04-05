@@ -3,13 +3,14 @@ module mips_proc ();
 	// CLK and tracker for number of cycles elapsed
 	reg clk;
 	reg [15:0] cycleNo;
+	reg initializing;
 
 	// Control unit wires (output signals)
 	reg branch, regDst, regWrite, aluSrc, memToReg;
 	reg memWrite, memRead, loadFullWord, loadSigned;
 
 	// Instruction Memory wires
-	wire [31:0] instruction;
+	wire [31:0] instruction, instrAddr;
 	reg [31:0] instrIn;
 	reg instrWrite;
 
@@ -63,7 +64,7 @@ module mips_proc ();
 
 	// MAIN COMPONENTS
 	program_counter	PC (pcValue, pcWrite, pcNext, pcReset, clk);
-	ram		instr_mem (instruction, instrIn, pcValue, instrWrite, 1'b1, 1'bx, clk);
+	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
 	ALU		alu (aluZero, aluResult, regData1, aluOprd2, aluOp);
 	ram		data_mem (memData, regData2, aluResult, memWrite, loadFullWord, loadSigned, clk);
@@ -73,34 +74,58 @@ module mips_proc ();
 	// [ ADD HERE: Control Unit ]
 	ALU_Controller aluControl (aluOp, instrOpCode, instrFunct);
 
+	// Program initialising and tracking
+	reg [2:0] instrI;
+	reg [31:0] program [8:0];
+	parameter programLength = 3'd2;
+
+	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? (instrI * 4) : 32'dx;
+
 	// Main() method
 	initial begin
+
+		$display("MIPS processor simulation starting...");
+		initializing <= 1;
+
+		// Put program instructions in a temp array, to be loaded to instruction memory by a loop.
+		program[0] <= 32'h00008020; // add $s0, $0, $0
+		program[1] <= 32'h02108020; // add $s0, $s0, $s0
+
+		instrWrite <= 1;
+		pcReset <= 1; // Do this here to gain advantage of the waiting time in the loop
+		#5; // This wait is necessary to recognise the instruction write signals
+
+		// Initialise instruction memory with test program
+		for(instrI = 0; instrI < programLength; instrI = instrI + 1) begin
+
+			instrIn <= program[instrI];
+			#5 clk <= 1;
+
+			$display("Instruction %d loaded: %h", instrI, instrIn);
+			#5 clk <= 0;
+		end
 
 		// Initialise clk and cycleNo variables
 		cycleNo <= 0;
 		clk <= 0;
-		pcReset <= 1;
+		pcReset <= 0;
+		pcWrite <= 1;
+		initializing <= 0;
 
+		// Simulate some control signals until control unit is integrated
 		branch <= 0;
 		regDst <= 1;
 		aluSrc <= 0;
 		memToReg <= 0;
 		regWrite <= 1;
 
-		// TODO: Load instruction(s) to memory to be executed.
-		instrIn <= 32'h00008020; // add $s0, $0, $0
-		instrWrite <= 1;
-
-		$display("MIPS processor starting...");
 		$display("Welcome to MIPS processor!");
+
+		$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
 		// START CLOCK GENERATOR
 		forever #5 clk <= ~clk;
 
-	end
-
-	initial begin
-		$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 	end
 
 	always @(posedge clk)
