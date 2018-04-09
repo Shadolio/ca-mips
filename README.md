@@ -16,4 +16,4 @@ The processor should support the following MIPS instructions only:
 - **Comparison:** slt, sltu
 
 
-**Project Deadline:** Friday ***April 21st,*** 2016. Evaluations will take place immediately afterwards.
+**Project Deadline:** Saturday ***April 28th,*** 2018. Evaluations will take place immediately afterwards.
