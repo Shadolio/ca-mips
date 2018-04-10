@@ -6,8 +6,11 @@ module mips_proc ();
 	reg initializing;
 
 	// Control unit wires (output signals)
-	reg branch, regDst, regWrite, aluSrc, memToReg;
+	reg branch, aluSrc, regDst, memToReg;
+	reg regWrite;
 	reg memWrite, memRead, loadFullWord, loadSigned;
+
+	// [ ADD HERE: Pipelining wires ]
 
 	// Instruction Memory wires
 	wire [31:0] instruction, instrAddr;
@@ -75,11 +78,11 @@ module mips_proc ();
 	ALU_Controller aluControl (aluOp, instrOpCode, instrFunct);
 
 	// Program initialising and tracking
-	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM TO LOAD -- SPECIFIED IN initial BLOCK BELOW.
+	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
 	// -----------------------------------
-	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
-	reg [31:0] program [8:0];	// 3. SHOULD BE COMPATIBLE WITH instrI.
 	parameter programLength = 3'd2;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
+	reg [31:0] program [8:0];	// 3. SHOULD BE ADDRESS COMPATIBLE WITH instrI.
 	// -----------------------------------
 
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? (instrI * 4) : 32'dx;
@@ -101,7 +104,7 @@ module mips_proc ();
 		instrWrite <= 1;
 		instrRead <= 0;
 		pcReset <= 1; // Do this here to gain advantage of the waiting time in the loop
-		#5; // The wait is necessary to recognise the instruction write signals
+		#5; // The wait is necessary to recognise the signls set above.
 
 		// Load the program to the instruction memory
 		for(instrI = 0; instrI < programLength; instrI = instrI + 1) begin
@@ -152,7 +155,7 @@ module mips_proc ();
 				This will get one register at ReadData1 and another on ReadData2.
 				Despite the ALU adding them and trying to put them in $0,
 					we achieved the target of showing their values on the wires.
-		Third way:
+		[SHADI RECOMMENDS] Third way:
 			Instead of achieving this by putting instructions in the Instruction Memory,
 				we can multiplex input to the register file,
 				to give it our own address instead of addresses from the datapath.
