@@ -6,9 +6,9 @@ module mips_proc ();
 	reg initializing;
 
 	// Control unit wires (output signals)
-	reg branch, aluSrc, regDst, memToReg;
-	reg regWrite;
-	reg memWrite, memRead, loadFullWord, loadSigned;
+	wire branch, aluSrc, regDst, memToReg;
+	wire regWrite;
+	wire memWrite, memRead, loadFullWord, loadSigned;
 
 	// [ ADD HERE: Pipelining wires ]
 
@@ -63,25 +63,28 @@ module mips_proc ();
 
 	assign pcPlus4 = pcValue + 4;
 	assign pcNext = (branch & aluZero) ? pcOffsetNextInst : pcPlus4;
-	assign pcOffsetNextInst = pcNext + (immOffset32bits << 2);
+	assign pcOffsetNextInst = pcPlus4 + (immOffset32bits << 2);
 
 	// MAIN COMPONENTS
 	program_counter	PC (pcValue, pcWrite, pcNext, pcReset, clk);
 	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, instrRead, 1'b1, 1'bx, clk);
-	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite_ALU, clk);
+	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
 	ALU		alu (aluZero, aluResult, regData1, aluOprd2, aluOp);
-	ram		data_mem (memData, regData2, aluResult, memWrite_ALU, memRead_ALU, loadFullWord_ALU, loadSigned_ALU, clk);
+	ram		data_mem (memData, regData2, aluResult, memWrite, memRead, loadFullWord, loadSigned, clk);
 
 	// [ ADD HERE: Pipeline registers ]
 
-	// [ ADD HERE: Control Unit ]
-	ALU_Controller aluControl (aluOp, instrOpCode, instrFunct);
+	// CONTROL UNIT
+	ALU_Controller	aluControl (aluOp, instrOpCode, instrFunct);
+	control_unit	CU (branch, aluSrc, regDst, memToReg, regWrite,
+				memWrite, memRead, loadFullWord, loadSigned,
+				instrOpCode);
 
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
 	// -----------------------------------
-	parameter programLength = 3'd2;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
-	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
+	parameter programLength = 4'd8;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	reg [3:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
 	reg [31:0] program [8:0];	// 3. SHOULD BE ADDRESS COMPATIBLE WITH instrI.
 	// -----------------------------------
 
@@ -96,8 +99,17 @@ module mips_proc ();
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
-		program[0] <= 32'h20100002; // add $s0, $0, $0
-		program[1] <= 32'h22100003; // add $s0, $s0, $s0
+		/*program[0] <= 32'h20100002; // addi $s0, $0, 2
+		program[1] <= 32'h22100003; // addi $s0, $s0, 3*/
+
+		program[0] <= 32'h20100002; // 		addi $s0, $0, 2
+		program[1] <= 32'h02008820; // 		add $s1, $s0, $0 # now, $s0 and $s1 both have the value 2
+		program[2] <= 32'h12110002; // 		beq $s0, $s1, other
+		program[3] <= 32'h8e280002; // this:	lw $t0, 2($s1)
+		program[4] <= 32'h10000002; // 		beq $0, $0, last
+		program[5] <= 32'hae300002; // other:	sw $s0, 2($s1)
+		program[6] <= 32'h1000fffc; // 		beq $0, $0, this
+		program[7] <= 32'h00000020; // last:	add $0, $0, $0
 		// ------------------------------------------------------
 		// REMEMBER: IF YOU CHANGE THE NUMBER OF INSTRUCTIONS IN THE PROGRAM, CHANGE THE PARAMETERS ABOVE!! (instrI, programLength, program)
 
@@ -127,13 +139,13 @@ module mips_proc ();
 
 		$display("MIPS processor simulation starting...");
 
-		// Simulate some control signals (instead of control unit)
+		/*// Simulate some control signals (instead of control unit)
 		branch <= 0;
 		regDst <= 0;
 		aluSrc <= 1;
 		memRead <= 1;
 		memToReg <= 0;
-		regWrite <= 1;
+		regWrite <= 1;*/
 
 		$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
