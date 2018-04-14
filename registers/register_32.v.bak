@@ -1,0 +1,37 @@
+module register_32 (wordOut, wordIn, write, reset, clk);
+	input write, reset, clk;
+	input [31:0] wordIn;
+	output reg [31:0] wordOut;
+
+	always @(posedge clk, posedge reset) begin
+
+		if(reset) wordOut <= 32'd0;
+
+		else if(write) wordOut <= wordIn;
+
+	end
+
+endmodule
+
+module register_32_tb ();
+	reg write, reset, clk;
+	reg [31:0] wordIn;
+	wire [31:0] wordOut;
+
+	register_32 testReg (wordOut, wordIn, write, reset, clk);
+
+	initial begin
+
+		$monitor("In: %h, Out: %h", wordIn, wordOut);
+
+		#5 reset <= 1;
+
+		wordIn <= 32'h22100002;
+
+		write <= 1;
+		reset <= 0;
+		#5 clk <= 1;
+
+	end
+
+endmodule

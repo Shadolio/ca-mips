@@ -132,14 +132,56 @@ R10
 R11
 !i113 1
 R4
-vmips_proc
-!s110 1523470160
+vIF_ID_ppreg
+Z12 !s110 1523543336
 !i10b 1
-!s100 NA[N^n`oUjJjZWg>9fE8e2
-I<TMfnJLDAj9Y6>Clm];A_2
+!s100 Y^6XZ631RlCdRbP9ez<_<2
+IMen5heCQNjHUz8>[3BH`?2
 R0
 R1
-w1523470054
+Z13 w1523543322
+Z14 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/IF_ID_ppreg.v
+Z15 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/IF_ID_ppreg.v
+L0 1
+R3
+r1
+!s85 0
+31
+Z16 !s108 1523543336.000000
+Z17 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/IF_ID_ppreg.v|
+Z18 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/IF_ID_ppreg.v|
+!i113 1
+R4
+n@i@f_@i@d_ppreg
+vIF_ID_ppreg_tb
+R12
+!i10b 1
+!s100 DUlPn3EdSYdlDaP:U9k`63
+IdJ_<bJUCUb?641OQ0ACCV0
+R0
+R1
+R13
+R14
+R15
+L0 24
+R3
+r1
+!s85 0
+31
+R16
+R17
+R18
+!i113 1
+R4
+n@i@f_@i@d_ppreg_tb
+vmips_proc
+!s110 1523641229
+!i10b 1
+!s100 2nn;oCVLB^H4QKD:0RAd12
+I?@JXBh@?>oFeRonCFG]0O2
+R0
+R1
+w1523641150
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 L0 1
@@ -147,7 +189,7 @@ R3
 r1
 !s85 0
 31
-!s108 1523470159.000000
+!s108 1523641229.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !s90 -reportprogress|300|-work|ca_mips|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !i113 1
@@ -161,14 +203,14 @@ r1
 !s100 7PzbK1P]>c^^3n=Hn1A@60
 Id5fNBNlZFR[ZC3FS2J][Q1
 R1
-Z12 w1522621168
-Z13 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
-Z14 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
+Z19 w1522621168
+Z20 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
+Z21 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v
 L0 1
 R3
-Z15 !s108 1522621177.000000
-Z16 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
-Z17 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
+Z22 !s108 1522621177.000000
+Z23 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
+Z24 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_2_1.v|
 !i113 1
 R4
 vmux_2_1_tb
@@ -180,108 +222,47 @@ r1
 !s100 HJA<DVOzGXRzg:zBRH:Gc0
 IV[c776V4>l3_h4@mDY:k51
 R1
-R12
-R13
-R14
-L0 10
-R3
-R15
-R16
-R17
-!i113 1
-R4
-vprogram_counter
-!s110 1522855943
-!i10b 1
-!s100 m1KXGIVAL0]FJEVWURnz]1
-I^_T_:@oGG1?MQN=?mg_fa0
-R0
-R1
-w1522855936
-8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v
-FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v
-L0 1
-R3
-r1
-!s85 0
-31
-!s108 1522855943.000000
-!s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v|
-!i113 1
-R4
-vram
-Z18 !s110 1522928672
-!i10b 1
-!s100 oWM0e]0>=G1^olZ<2Wg3B1
-ID:2`TRNOo[f6QGI[BnoVo2
-R0
-R1
-Z19 w1522928662
-Z20 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v
-Z21 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v
-L0 3
-R3
-r1
-!s85 0
-31
-Z22 !s108 1522928672.000000
-Z23 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v|
-Z24 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v|
-!i113 1
-R4
-vram_tb
-R18
-!i10b 1
-!s100 PcM=k:f[KBCQSNhb<^1=V2
-IUJUoICjLYjT6WJ[E7cA_71
-R0
-R1
 R19
 R20
 R21
-L0 77
+L0 10
 R3
-r1
-!s85 0
-31
 R22
 R23
 R24
 !i113 1
 R4
-vRegisterFile
-Z25 !s110 1522868595
+vram
+Z25 !s110 1522928672
 !i10b 1
-!s100 BjM6EO8UoaKO8nMU0=R1k2
-IA>S`KY_M<;hROK_<JI6S>0
+!s100 oWM0e]0>=G1^olZ<2Wg3B1
+ID:2`TRNOo[f6QGI[BnoVo2
 R0
 R1
-Z26 w1522868588
-Z27 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
-Z28 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
-L0 1
+Z26 w1522928662
+Z27 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v
+Z28 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v
+L0 3
 R3
 r1
 !s85 0
 31
-Z29 !s108 1522868595.000000
-Z30 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
-Z31 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
+Z29 !s108 1522928672.000000
+Z30 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v|
+Z31 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/ram.v|
 !i113 1
 R4
-n@register@file
-vRegisterFile_tb
+vram_tb
 R25
 !i10b 1
-!s100 ^mm<Og<EPg]BoS9MNi`>F0
-I58Cl=[Yh1MCaRY3mQ23VP2
+!s100 PcM=k:f[KBCQSNhb<^1=V2
+IUJUoICjLYjT6WJ[E7cA_71
 R0
 R1
 R26
 R27
 R28
-L0 20
+L0 77
 R3
 r1
 !s85 0
@@ -289,6 +270,87 @@ r1
 R29
 R30
 R31
+!i113 1
+R4
+vregister_32
+Z32 !s110 1523543156
+!i10b 1
+!s100 :N8KIPf_8I;j5Bm1U3bMN3
+IM<od<1K567M2fjTk0@N=<3
+R0
+R1
+Z33 w1523543151
+Z34 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_32.v
+Z35 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_32.v
+L0 1
+R3
+r1
+!s85 0
+31
+Z36 !s108 1523543156.000000
+Z37 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_32.v|
+Z38 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_32.v|
+!i113 1
+R4
+vregister_32_tb
+R32
+!i10b 1
+!s100 LNVD[:WX<Qhc3^<S7lif=3
+I3S128>`bB[0odkE1KiUd@1
+R0
+R1
+R33
+R34
+R35
+L0 16
+R3
+r1
+!s85 0
+31
+R36
+R37
+R38
+!i113 1
+R4
+vRegisterFile
+Z39 !s110 1522868595
+!i10b 1
+!s100 BjM6EO8UoaKO8nMU0=R1k2
+IA>S`KY_M<;hROK_<JI6S>0
+R0
+R1
+Z40 w1522868588
+Z41 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
+Z42 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v
+L0 1
+R3
+r1
+!s85 0
+31
+Z43 !s108 1522868595.000000
+Z44 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
+Z45 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/register_file/RegisterFile.v|
+!i113 1
+R4
+n@register@file
+vRegisterFile_tb
+R39
+!i10b 1
+!s100 ^mm<Og<EPg]BoS9MNi`>F0
+I58Cl=[Yh1MCaRY3mQ23VP2
+R0
+R1
+R40
+R41
+R42
+L0 20
+R3
+r1
+!s85 0
+31
+R43
+R44
+R45
 !i113 1
 R4
 n@register@file_tb
@@ -299,7 +361,7 @@ vShifLeft2_tb
 IRGjP[aXZJZQMk3UkHM`l:0
 R0
 R1
-Z32 w1522841229
+Z46 w1522841229
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ShiftLeft2_tb.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ShiftLeft2_tb.v
 L0 1
@@ -362,7 +424,7 @@ vSignExtender_tb
 IZPJ_FAC4PEDj5a^KmK_C73
 R0
 R1
-R32
+R46
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/SignExtender_tb.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/SignExtender_tb.v
 L0 1

@@ -5,80 +5,143 @@ module mips_proc ();
 	reg [15:0] cycleNo;
 	reg initializing;
 
-	// Control unit wires (output signals)
-	wire branch, aluSrc, regDst, memToReg;
-	wire regWrite;
-	wire memWrite, memRead, loadFullWord, loadSigned;
+	// Special wires for initialization and reading
+	wire [31:0] initInstrAddr;
 
-	// [ ADD HERE: Pipelining wires ]
+	////////////////////////////////////////////////////////////////
+	//////////////// WIRES BY COMPONENT (PORTS)
+	////////////////////////////////////////////////////////////////
 
-	// Instruction Memory wires
+	// PC
+	wire [31:0] pcValue, pcNext;
+	reg pcWrite;
+	reg pcReset;
+
+	// Instruction Memory
 	wire [31:0] instruction, instrAddr;
 	reg [31:0] instrIn;
 	reg instrWrite, instrRead;
 
-	// Instruction Decode: Take certain parameters/fields from the 32-bit instruction
-	wire [5:0] instrOpCode, instrFunct;
-	wire [4:0] instrRs, instrRt, instrRd, instrShamt;
-	wire [15:0] instrImm;
-	wire [31:0] immOffset32bits;
-
-	assign instrOpCode = instruction[31:26];
-
-	assign instrRs = instruction[25:21];
-	assign instrRt = instruction[20:16];
-	assign instrRd = instruction[15:11];
-	assign instrShamt = instruction[10:6];
-	assign instrFunct = instruction[5:0];
-
-	assign instrImm = instruction[15:0];
-
-	SignExtender offsetSignExtender (immOffset32bits, instrImm, 1'b0);
-
-	// Register File wires
+	// Register File
 	wire [31:0] regData1, regData2, writeData;
 	wire [4:0] readReg1, readReg2, writeReg;
+	wire regWrite;
 
-	assign readReg1 = instrRs;
-	assign readReg2 = instrRt;
-	assign writeReg = (regDst == 0) ? instrRt : (regDst == 1) ? instrRd : 5'dx;
-
-	// ALU wires
-	wire [31:0] aluResult, aluOprd2;
+	// ALU
+	wire [31:0] aluResult, aluOprd1, aluOprd2;
 	wire aluZero;
 	wire [3:0] aluOp;
 
-	assign aluOprd2 = (aluSrc == 0) ? regData2 : (aluSrc == 1) ? immOffset32bits : 32'dx;
+	// Data Memory
+	wire [31:0] memDataOut, memAddr, memDataIn;
+	wire memWrite, memRead, loadFullWord, loadSigned;
 
-	// Data Memory wires
-	wire [31:0] memData;
+	// Other control signals (intermediate signals and datapath MUX signals)
+	wire branch, aluSrc, regDst, memToReg;
 
-	// Write Back: Assign writeData of registerFile to either Data Memory or ALU directly
-	assign writeData = (memToReg == 1) ? memData : (memToReg == 0) ? aluResult : 32'dx;
+	////////////////////////////////////////////////////////////////
+	//////////////// PIPELINING/STAGING WIRES
+	////////////////////////////////////////////////////////////////
 
-	// PC wires
-	wire [31:0] pcValue, pcNext, pcPlus4, pcOffsetNextInst;
-	reg pcWrite;
-	reg pcReset;
+	// PC
+	wire [31:0] pcPlus4_F, pcPlus4_D, pcPlus4_E;
+	wire [31:0] pcOffsetNextInst_E;
 
-	assign pcPlus4 = pcValue + 4;
-	assign pcNext = (branch & aluZero) ? pcOffsetNextInst : pcPlus4;
-	assign pcOffsetNextInst = pcPlus4 + (immOffset32bits << 2);
+	// Instruction Decode
+	wire [31:0] instruction_D;
+	wire [15:0] instrImm;
+	wire [5:0] instrOpCode, instrFunct;
+	wire [4:0] instrRs, instrRt, instrRd, instrShamt;
+	wire [4:0] instrRt_E, instrRd_E;
+	wire [31:0] imm32_D, shamt32_D;
+	wire [31:0] imm32_E, shamt32_E;
+
+	// Register file
+	wire [31:0] regData1_E;
+	wire [31:0] regData2_E, regData2_M;
+	wire [4:0] writeReg_E, writeReg_M;
+	wire regWrite_D, regWrite_E, regWrite_M;
+
+	////////////////////////////////////////////////////////////////
+	//////////////// WIRES BY STAGE (Wires, links and MUX's)
+	////////////////////////////////////////////////////////////////
+
+	// Instruction Fetch
+
+	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
+
+	assign pcPlus4_F = pcValue + 4;
+	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
+	assign pcNext = (branch & aluZero) ? pcOffsetNextInst_E : pcPlus4_F;
+
+	// Instruction Decode
+
+	// Divide 32-bit instruction into fields/parameters
+	assign instrOpCode = instruction_D[31:26];
+
+	assign instrRs = instruction_D[25:21];
+	assign instrRt = instruction_D[20:16];
+	assign instrRd = instruction_D[15:11];
+	assign instrFunct = instruction_D[5:0];
+
+	assign instrShamt = instruction_D[10:6];
+	assign shamt32_D = { 27'd0, instrShamt };
+
+	assign instrImm = instruction_D[15:0];
+
+	SignExtender offsetSignExtender (imm32_D, instrImm, 1'b0);
+
+	// Register file
+	assign readReg1 = instrRs;
+	assign readReg2 = instrRt;
+
+	// Execute
+	assign aluOprd1 = regData1_E;
+	assign aluOprd2 = (aluSrc == 0) ? regData2_E : (aluSrc == 1) ? imm32_E : 32'dx;
+		// TODO: When SRL or SLL (ALU shift operation,) operand 2 should be 'shamt'
+	assign writeReg_E = (regDst == 0) ? instrRt_E : (regDst == 1) ? instrRd_E : 5'dx;
+
+	// Write Back
+	assign writeData = (memToReg == 1) ? memDataOut : (memToReg == 0) ? aluResult : 32'dx;
 
 	// MAIN COMPONENTS
-	program_counter	PC (pcValue, pcWrite, pcNext, pcReset, clk);
+	register_32	PC (pcValue, pcNext, pcWrite, pcReset, clk);
 	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, instrRead, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
-	ALU		alu (aluZero, aluResult, regData1, aluOprd2, aluOp);
-	ram		data_mem (memData, regData2, aluResult, memWrite, memRead, loadFullWord, loadSigned, clk);
-
-	// [ ADD HERE: Pipeline registers ]
+	ALU		alu (aluZero, aluResult, aluOprd1, aluOprd2, aluOp);
+	ram		data_mem (memDataOut, regData2, aluResult, memWrite, memRead, loadFullWord, loadSigned, clk);
 
 	// CONTROL UNIT
 	ALU_Controller	aluControl (aluOp, instrOpCode, instrFunct);
 	control_unit	CU (branch, aluSrc, regDst, memToReg, regWrite,
 				memWrite, memRead, loadFullWord, loadSigned,
 				instrOpCode);
+
+	// [ ADD HERE: Pipeline registers ]
+
+	// CONNECT STAGES (REPLACE PIPELINE REGISTERS)
+
+	// PC
+	assign pcPlus4_D = pcPlus4_F;
+	assign pcPlus4_E = pcPlus4_D;
+
+	// Instruction Decode
+	assign instruction_D = instruction;
+
+	assign instrRt_E = instrRt;
+	assign instrRd_E = instrRd;
+
+	assign imm32_E = imm32_D;
+	assign shamt32_E = shamt32_D;
+
+	// Register file
+	assign regData1_E = regData1;
+
+	assign regData2_E = regData2;
+	assign regData2_M = regData2_E;
+
+	assign writeReg_M = writeReg_E;
+	assign writeReg = writeReg_M;
 
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
@@ -88,7 +151,7 @@ module mips_proc ();
 	reg [31:0] program [7:0];	// 3. SHOULD BE ADDRESS COMPATIBLE WITH instrI.
 	// -----------------------------------
 
-	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? (instrI * 4) : 32'dx;
+	assign initInstrAddr = instrI * 4;
 
 	// Main() method
 	initial begin
