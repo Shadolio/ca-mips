@@ -46,6 +46,7 @@ module mips_proc ();
 	// PC
 	wire [31:0] pcPlus4_F, pcPlus4_D, pcPlus4_E;
 	wire [31:0] pcOffsetNextInst_E;
+	wire pcSrc;
 
 	// Instruction Decode
 	wire [31:0] instruction_D;
@@ -83,7 +84,8 @@ module mips_proc ();
 
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
-	assign pcNext = (branch_E & aluZero) ? pcOffsetNextInst_E : pcPlus4_F;
+	assign pcNext = (pcSrc == 1) ? pcOffsetNextInst_E : (pcSrc == 0) ? pcPlus4_F : 32'dx;
+	assign pcSrc = branch_E & aluZero;
 
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
 
@@ -143,10 +145,39 @@ module mips_proc ();
 	//////////////// Pipelining
 	////////////////////////////////////////////////////////////////
 
-	// [ ADD HERE: Pipeline registers ]
+	// IF/ID
+	IF_ID_ppreg IF_ID (instruction_D, pcPlus4_D, instruction, pcPlus4_F, 1'b1, 1'b0, clk);
 
-	// When no pipeline registers are connected,
+	// ID/EXE
+	ID_EXE_ppreg ID_EXE (
+		pcPlus4_E, pcPlus4_D, instrRt_E, instrRt, instrRd_E, instrRd,
+		imm32_E, imm32_D, shamt32_E, shamt32_D,
+		regData1_E, regData1, regData2_E, regData2,
+		aluOp, aluOp_D, aluSrc_E, aluSrc_D,
+		regDst_E, regDst_D, regWrite_E, regWrite_D, branch_E, branch_D, memToReg_E, memToReg_D,
+		memWrite_E, memWrite_D, memRead_E, memRead_D,
+		loadFullWord_E, loadFullWord_D, loadSigned_E, loadSigned_D,
+		1'b1, 1'b0, clk);
+
+	// EXE/MEM
+	EXE_MEM_ppreg EXE_MEM (
+		regData2_M, regData2_E, aluResult_M, aluResult,
+		writeReg_M, writeReg_E,
+		regWrite_M, regWrite_E, memToReg_M, memToReg_E,
+		memWrite, memWrite_E, memRead, memRead_E,
+		loadFullWord, loadFullWord_E, loadSigned, loadSigned_E,
+		1'b1, 1'b0, clk);
+
+	// MEM/WB
+	MEM_WB_ppreg MEM_WB (
+		memDataOut_W, memDataOut, aluResult_W, aluResult_M,
+		writeReg, writeReg_M,
+		regWrite, regWrite_M, memToReg_W, memToReg_M,
+		1'b1, 1'b0, clk);
+
+	/*// When no pipeline registers are connected,
 	// connect the wires directly from stage to stage to simulate a working single-cycle processor.
+
 	// IF -> ID
 	assign pcPlus4_D = pcPlus4_F;
 	assign instruction_D = instruction;
@@ -197,11 +228,12 @@ module mips_proc ();
 	assign memToReg_W = memToReg_M;
 	assign writeReg = writeReg_M;
 	assign regWrite = regWrite_M;
+*/
 
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
 	// -----------------------------------
-	parameter programLength = 3'd2;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	parameter programLength = 3'd7;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
 	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
 	reg [31:0] program [7:0];	// 3. SHOULD BE ADDRESS COMPATIBLE WITH instrI.
 
@@ -217,8 +249,17 @@ module mips_proc ();
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
-		program[0] <= 32'h20100002; // addi $s0, $0, 2
-		program[1] <= 32'h22100003; // addi $s0, $s0, 3
+		/*program[0] <= 32'h20100002; // addi $s0, $0, 2
+		program[1] <= 32'h22100003; // addi $s0, $s0, 3*/
+
+		program[0] <= 32'h20110005; // addi $17, $0, 5
+		program[1] <= 32'h20100002; // addi $16, $0, 2
+		program[2] <= 32'h2012fffd; // addi $18, $0, -3
+		program[3] <= 32'hac000005; // sw $0, 5($0)
+		program[4] <= 32'h00009820; // add $19, $0, $0
+		program[5] <= 32'h8c080005; // lw $8, 5($0)
+		program[6] <= 32'h02304882; // sub $9, $17, $16
+
 		// ------------------------------------------------------
 		// REMEMBER: IF YOU CHANGE THE NUMBER OF INSTRUCTIONS IN THE PROGRAM, CHANGE THE PARAMETERS ABOVE!! (instrI, programLength, program)
 
