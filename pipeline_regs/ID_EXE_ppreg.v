@@ -6,16 +6,20 @@ module ID_EXE_ppreg (
 	aluOpOut, aluOpIn, aluSrcOut, aluSrcIn,
 	regDstOut, regDstIn, regWriteOut, regWriteIn,
 	branchOut, branchIn, memToRegOut, memToRegIn,
+	memWriteOut, memWriteIn, memReadOut, memReadIn,
+	loadFullWordOut, loadFullWordIn, loadSignedOut, loadSignedIn,
 	write, reset, clk);
 	input write, reset, clk;
 	input [31:0] pcPlus4In, imm32In, shamt32In, regData1In, regData2In;
 	input [4:0] instrRtIn, instrRdIn;
 	input [3:0] aluOpIn;
 	input aluSrcIn, regDstIn, regWriteIn, branchIn, memToRegIn;
+	input memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
 	output [31:0] pcPlus4Out, imm32Out, shamt32Out, regData1Out, regData2Out;
 	output [4:0] instrRtOut, instrRdOut;
 	output [3:0] aluOpOut;
 	output aluSrcOut, regDstOut, regWriteOut, branchOut, memToRegOut;
+	output memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
 
 	wire [4:0] aluOpIn5, aluOpOut5;
 
@@ -39,6 +43,11 @@ module ID_EXE_ppreg (
 	D_FlipFlop branchFF	(branchOut, branchIn, write, reset, clk);
 	D_FlipFlop memToRegFF	(memToRegOut, memToRegIn, write, reset, clk);
 
+	D_FlipFlop memWriteFF	(memWriteOut, memWriteIn, write, reset, clk);
+	D_FlipFlop memReadFF	(memReadOut, memReadIn, write, reset, clk);
+	D_FlipFlop loadFullWord	(loadFullWordOut, loadFullWordIn, write, reset, clk);
+	D_FlipFlop loadSignedFF	(loadSignedOut, loadSignedIn, write, reset, clk);
+
 endmodule
 
 module ID_EXE_ppreg_tb ();
@@ -47,10 +56,12 @@ module ID_EXE_ppreg_tb ();
 	reg [4:0] instrRtIn, instrRdIn;
 	reg [3:0] aluOpIn;
 	reg aluSrcIn, regDstIn, regWriteIn, branchIn, memToRegIn;
+	reg memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
 	wire [31:0] pcPlus4Out, imm32Out, shamt32Out, regData1Out, regData2Out;
 	wire [4:0] instrRtOut, instrRdOut;
 	wire [3:0] aluOpOut;
 	wire aluSrcOut, regDstOut, regWriteOut, branchOut, memToRegOut;
+	wire memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
 
 	ID_EXE_ppreg testPPreg (
 		pcPlus4Out, pcPlus4In,
@@ -60,6 +71,8 @@ module ID_EXE_ppreg_tb ();
 		aluOpOut, aluOpIn, aluSrcOut, aluSrcIn,
 		regDstOut, regDstIn, regWriteOut, regWriteIn,
 		branchOut, branchIn, memToRegOut, memToRegIn,
+		memWriteOut, memWriteIn, memReadOut, memReadIn,
+		loadFullWordOut, loadFullWordIn, loadSignedOut, loadSignedIn,
 		write, reset, clk);
 
 	initial begin
