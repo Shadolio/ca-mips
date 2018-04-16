@@ -139,9 +139,14 @@ module mips_proc ();
 				memWrite_D, memRead_D, loadFullWord_D, loadSigned_D,
 				instrOpCode);
 
+	////////////////////////////////////////////////////////////////
+	//////////////// Pipelining
+	////////////////////////////////////////////////////////////////
+
 	// [ ADD HERE: Pipeline registers ]
 
-	// Connect pipeline stages with direct wires instead of registers for now
+	// When no pipeline registers are connected,
+	// connect the wires directly from stage to stage to simulate a working single-cycle processor.
 	// IF -> ID
 	assign pcPlus4_D = pcPlus4_F;
 	assign instruction_D = instruction;
