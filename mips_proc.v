@@ -157,6 +157,7 @@ module mips_proc ();
 
 	assign regData1_E = regData1;
 	assign regData2_E = regData2;
+	assign regWrite_E = regWrite_D;
 
 	assign aluOp = aluOp_D;
 
@@ -183,12 +184,14 @@ module mips_proc ();
 	assign loadSigned = loadSigned_E;
 
 	assign memToReg_M = memToReg_E;
+	assign regWrite_M = regWrite_E;
 
 	// MEM -> WB
 	assign memDataOut_W = memDataOut;
 	assign aluResult_W = aluResult_M;
 	assign memToReg_W = memToReg_M;
 	assign writeReg = writeReg_M;
+	assign regWrite = regWrite_M;
 
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".

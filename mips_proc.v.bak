@@ -157,6 +157,7 @@ module mips_proc ();
 
 	assign regData1_E = regData1;
 	assign regData2_E = regData2;
+	assign regWrite_E = regWrite_D;
 
 	assign aluOp = aluOp_D;
 
@@ -165,11 +166,10 @@ module mips_proc ();
 	assign loadFullWord_E = loadFullWord_D;
 	assign loadSigned_E = loadSigned_D;
 
-	assign memToReg_E = memToReg_D;
-
 	assign branch_E = branch_D;
 	assign aluSrc_E = aluSrc_D;
 	assign regDst_E = regDst_D;
+	assign memToReg_E = memToReg_D;
 
 	// EXE -> MEM
 	assign regData2_M = regData2_E;
@@ -184,6 +184,7 @@ module mips_proc ();
 	assign loadSigned = loadSigned_E;
 
 	assign memToReg_M = memToReg_E;
+	assign regWrite_M = regWrite_E;
 
 	// MEM -> WB
 	assign memDataOut_W = memDataOut;
