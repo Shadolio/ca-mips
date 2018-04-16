@@ -5,4 +5,12 @@ Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
 Top level modules:
 	program_counter
 
+} {} {}} {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_5.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/registers/register_5.v}
+Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
+-- Compiling module register_5
+-- Compiling module register_5_tb
+
+Top level modules:
+	register_5_tb
+
 } {} {}}

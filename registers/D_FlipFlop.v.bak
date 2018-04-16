@@ -1,0 +1,37 @@
+module D_FlipFlop (bitOut, bitIn, write, reset, clk);
+	input write, reset, clk;
+	input bitIn;
+	output reg bitOut;
+
+	always @(posedge clk, posedge reset) begin
+
+		if(reset) bitOut <= 1'd0;
+
+		else if(write) bitOut <= bitIn;
+
+	end
+
+endmodule
+
+module D_FlipFlop_tb ();
+	reg write, reset, clk;
+	reg bitIn;
+	wire bitOut;
+
+	D_FlipFlop testFF (bitOut, bitIn, write, reset, clk);
+
+	initial begin
+
+		$monitor("In: %h, Out: %h", bitIn, bitOut);
+
+		#5 reset <= 1;
+
+		#5 bitIn <= 1'd1;
+
+		write <= 1;
+		reset <= 0;
+		#5 clk <= 1;
+
+	end
+
+endmodule

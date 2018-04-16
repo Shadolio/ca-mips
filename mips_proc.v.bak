@@ -191,6 +191,7 @@ module mips_proc ();
 	assign aluResult_W = aluResult_M;
 	assign memToReg_W = memToReg_M;
 	assign writeReg = writeReg_M;
+	assign regWrite = regWrite_M;
 
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
