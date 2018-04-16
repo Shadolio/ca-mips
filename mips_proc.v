@@ -62,19 +62,28 @@ module mips_proc ();
 	wire [4:0] writeReg_E, writeReg_M;
 	wire regWrite_D, regWrite_E, regWrite_M;
 
+	// ALU
+	wire [31:0] aluResult_M, aluResult_W;
+	wire [3:0] aluOp_D;
+
+	// Data Memory
+	wire [31:0] memDataOut_W;
+	wire memWrite_D, memRead_D, loadFullWord_D, loadSigned_D;
+	wire memWrite_E, memRead_E, loadFullWord_E, loadSigned_E;
+
 	////////////////////////////////////////////////////////////////
 	//////////////// WIRES BY STAGE (Wires, links and MUX's)
 	////////////////////////////////////////////////////////////////
 
-	// Instruction Fetch
-
-	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
+	// INSTRUCTION FETCH
 
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
 	assign pcNext = (branch & aluZero) ? pcOffsetNextInst_E : pcPlus4_F;
 
-	// Instruction Decode
+	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
+
+	// INSTRUCTION DECODE
 
 	// Divide 32-bit instruction into fields/parameters
 	assign instrOpCode = instruction_D[31:26];
@@ -95,38 +104,46 @@ module mips_proc ();
 	assign readReg1 = instrRs;
 	assign readReg2 = instrRt;
 
-	// Execute
+	// EXECUTE
 	assign aluOprd1 = regData1_E;
 	assign aluOprd2 = (aluSrc == 0) ? regData2_E : (aluSrc == 1) ? imm32_E : 32'dx;
 		// TODO: When SRL or SLL (ALU shift operation,) operand 2 should be 'shamt'
+
 	assign writeReg_E = (regDst == 0) ? instrRt_E : (regDst == 1) ? instrRd_E : 5'dx;
 
-	// Write Back
-	assign writeData = (memToReg == 1) ? memDataOut : (memToReg == 0) ? aluResult : 32'dx;
+	// MEMORY
+	assign memAddr = aluResult_M;
+	assign memDataIn = regData2_M;
+
+	// WRITE BACK
+	assign writeData = (memToReg == 1) ? memDataOut : (memToReg == 0) ? aluResult_W : 32'dx;
+
+	////////////////////////////////////////////////////////////////
+	//////////////// Components
+	////////////////////////////////////////////////////////////////
 
 	// MAIN COMPONENTS
 	register_32	PC (pcValue, pcNext, pcWrite, pcReset, clk);
 	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, instrRead, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
 	ALU		alu (aluZero, aluResult, aluOprd1, aluOprd2, aluOp);
-	ram		data_mem (memDataOut, regData2, aluResult, memWrite, memRead, loadFullWord, loadSigned, clk);
+	ram		data_mem (memDataOut, memDataIn, memAddr, memWrite, memRead, loadFullWord, loadSigned, clk);
 
 	// CONTROL UNIT
-	ALU_Controller	aluControl (aluOp, instrOpCode, instrFunct);
-	control_unit	CU (branch, aluSrc, regDst, memToReg, regWrite,
-				memWrite, memRead, loadFullWord, loadSigned,
+	ALU_Controller	aluControl (aluOp_D, instrOpCode, instrFunct);
+	control_unit	CU (branch, aluSrc, regDst, memToReg, regWrite_D,
+				memWrite_D, memRead_D, loadFullWord_D, loadSigned_D,
 				instrOpCode);
 
 	// [ ADD HERE: Pipeline registers ]
 
-	// CONNECT STAGES (REPLACE PIPELINE REGISTERS)
-
-	// PC
+	// Connect pipeline stages with direct wires instead of registers for now
+	// IF -> ID
 	assign pcPlus4_D = pcPlus4_F;
-	assign pcPlus4_E = pcPlus4_D;
-
-	// Instruction Decode
 	assign instruction_D = instruction;
+
+	// ID -> EXE
+	assign pcPlus4_E = pcPlus4_D;
 
 	assign instrRt_E = instrRt;
 	assign instrRd_E = instrRd;
@@ -134,13 +151,31 @@ module mips_proc ();
 	assign imm32_E = imm32_D;
 	assign shamt32_E = shamt32_D;
 
-	// Register file
 	assign regData1_E = regData1;
-
 	assign regData2_E = regData2;
+
+	assign aluOp = aluOp_D;
+
+	assign memWrite_E = memWrite_D;
+	assign memRead_E = memRead_D;
+	assign loadFullWord_E = loadFullWord_D;
+	assign loadSigned_E = loadSigned_D;
+
+	// EXE -> MEM
 	assign regData2_M = regData2_E;
 
 	assign writeReg_M = writeReg_E;
+
+	assign aluResult_M = aluResult;
+
+	assign memWrite = memWrite_E;
+	assign memRead = memRead_E;
+	assign loadFullWord = loadFullWord_E;
+	assign loadSigned = loadSigned_E;
+
+	// MEM -> WB
+	assign memDataOut_W = memDataOut;
+	assign aluResult_W = aluResult_M;
 	assign writeReg = writeReg_M;
 
 	// Program initialising and tracking
