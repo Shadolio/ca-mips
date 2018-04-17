@@ -251,8 +251,6 @@ module mips_proc ();
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
-		/*program[0] <= 32'h20100002; // addi $s0, $0, 2
-		program[1] <= 32'h22100003; // addi $s0, $s0, 3*/
 
 		program[0] <= 32'h20110005; // addi $17, $0, 5
 		program[1] <= 32'h20100002; // addi $16, $0, 2
@@ -260,7 +258,7 @@ module mips_proc ();
 		program[3] <= 32'hac000005; // sw $0, 5($0)
 		program[4] <= 32'h00009820; // add $19, $0, $0
 		program[5] <= 32'h8e280000; // lw $8, 0($17)
-		program[6] <= 32'h02304882; // sub $9, $17, $16
+		program[6] <= 32'h02304822; // sub $9, $17, $16
 
 		// ------------------------------------------------------
 		// REMEMBER: IF YOU CHANGE THE NUMBER OF INSTRUCTIONS IN THE PROGRAM, CHANGE THE PARAMETERS ABOVE!! (instrI, programLength, program)

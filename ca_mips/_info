@@ -9,7 +9,7 @@ z2
 cModel Technology
 dC:/altera_lite/15.1
 vALU
-!s110 1523470146
+!s110 1523979384
 !i10b 1
 !s100 ESG5DFcU1h3SUelmWIYgb0
 I=WGSBao_V<]10VV8k4Wlc2
@@ -23,20 +23,20 @@ Z3 OV;L;10.4b;61
 r1
 !s85 0
 31
-!s108 1523470146.000000
+!s108 1523979384.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU.v|
 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU.v|
 !i113 1
 Z4 o-work work
 n@a@l@u
 vALU_Controller
-!s110 1523470149
+!s110 1523979388
 !i10b 1
-!s100 WOOa>h^Kf1:71?g40SHX41
-I]4AePi1Zd_[3zK_7_U==Z0
+!s100 l2O1aQe`j4JzI>lRR]e`E3
+IQ;9ZDJ_lMIHz1l?BbNa[b1
 R0
 R1
-R2
+w1523979377
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller.v
 L0 1
@@ -44,14 +44,14 @@ R3
 r1
 !s85 0
 31
-!s108 1523470149.000000
+!s108 1523979388.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller.v|
 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller.v|
 !i113 1
 R4
 n@a@l@u_@controller
 vALU_Controller_tb
-!s110 1523470152
+!s110 1523979391
 !i10b 1
 !s100 [0Xcfohg13B2g1lTfm``Y1
 Ieo;Hk;9;Tk8z@V7BGlde[0
@@ -65,14 +65,14 @@ R3
 r1
 !s85 0
 31
-!s108 1523470151.000000
+!s108 1523979390.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller_tb.v|
 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_Controller_tb.v|
 !i113 1
 R4
 n@a@l@u_@controller_tb
 vALU_tb
-!s110 1523470155
+!s110 1523979394
 !i10b 1
 !s100 zOFczJ?bmMP]ZkHh6jcc_2
 I=29[MV6l]4h16RbJEHPGZ3
@@ -86,7 +86,7 @@ R3
 r1
 !s85 0
 31
-!s108 1523470155.000000
+!s108 1523979394.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_tb.v|
 !s90 -reportprogress|300|-work|work|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/ALU Modules/ALU_tb.v|
 !i113 1
@@ -343,13 +343,13 @@ R48
 R4
 n@m@e@m_@w@b_ppreg_tb
 vmips_proc
-!s110 1523957399
+!s110 1523979521
 !i10b 1
-!s100 8U4ioGAVWRbmQ_YY?f`O`2
-I0>Z15l2YD1^iZB1cNMfnn3
+!s100 dcoKWl^AzKNLOz]No@2ji0
+IhW9>iQ0h]n=@98b`^NI:O1
 R0
 R1
-w1523957389
+w1523979494
 8C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 FC:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v
 L0 1
@@ -357,7 +357,7 @@ R3
 r1
 !s85 0
 31
-!s108 1523957399.000000
+!s108 1523979520.000000
 !s107 C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !s90 -reportprogress|300|-work|ca_mips|C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/mips_proc.v|
 !i113 1
