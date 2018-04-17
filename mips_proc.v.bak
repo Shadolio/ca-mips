@@ -84,8 +84,10 @@ module mips_proc ();
 
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
-	assign pcNext = (pcSrc == 1) ? pcOffsetNextInst_E : (pcSrc == 0) ? pcPlus4_F : 32'dx;
+	//assign pcNext = (pcSrc == 1) ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
 	assign pcSrc = branch_E & aluZero;
+
+	mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
 
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
 
