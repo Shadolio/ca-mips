@@ -17,3 +17,9 @@ The processor should support the following MIPS instructions only:
 
 
 **Project Deadline:** Saturday ***April 28th,*** 2018. Evaluations will take place immediately afterwards.
+
+### Authors
+- **Shadi Barghash**
+- **Abdelrahman Tarek**
+- **Anwar Labib**
+- **Daniel Achraf**
