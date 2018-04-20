@@ -31,6 +31,7 @@ module mips_proc ();
 	wire [31:0] aluResult, aluOprd1, aluOprd2;
 	wire aluZero;
 	wire [3:0] aluOp;
+	wire [4:0] aluShamt;
 
 	// Data Memory
 	wire [31:0] memDataOut, memAddr, memDataIn;
@@ -54,8 +55,7 @@ module mips_proc ();
 	wire [5:0] instrOpCode, instrFunct;
 	wire [4:0] instrRs, instrRt, instrRd, instrShamt;
 	wire [4:0] instrRt_E, instrRd_E;
-	wire [31:0] imm32_D, shamt32_D;
-	wire [31:0] imm32_E, shamt32_E;
+	wire [31:0] imm32_D, imm32_E;
 
 	// Register file
 	wire [31:0] regData1_E;
@@ -66,6 +66,7 @@ module mips_proc ();
 	// ALU
 	wire [31:0] aluResult_M, aluResult_W;
 	wire [3:0] aluOp_D;
+	wire shift_D, shift_E;
 
 	// Data Memory
 	wire [31:0] memDataOut_W;
@@ -84,7 +85,7 @@ module mips_proc ();
 
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
-	//assign pcNext = (pcSrc == 1) ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
+	//assign pcNext = pcSrc ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
 	assign pcSrc = branch_E & aluZero;
 
 	mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
@@ -102,7 +103,6 @@ module mips_proc ();
 	assign instrFunct = instruction_D[5:0];
 
 	assign instrShamt = instruction_D[10:6];
-	assign shamt32_D = { 27'd0, instrShamt };
 
 	assign instrImm = instruction_D[15:0];
 
@@ -114,17 +114,16 @@ module mips_proc ();
 
 	// EXECUTE
 	assign aluOprd1 = regData1_E;
-	assign aluOprd2 = (aluSrc_E == 0) ? regData2_E : (aluSrc_E == 1) ? imm32_E : 32'dx;
-		// TODO: When SRL or SLL (ALU shift operation,) operand 2 should be 'shamt'
+	assign aluOprd2 = aluSrc_E ? imm32_E : regData2_E;
 
-	assign writeReg_E = (regDst_E == 0) ? instrRt_E : (regDst_E == 1) ? instrRd_E : 5'dx;
+	assign writeReg_E = regDst_E ? instrRd_E : instrRt_E;
 
 	// MEMORY
 	assign memAddr = aluResult_M;
 	assign memDataIn = regData2_M;
 
 	// WRITE BACK
-	assign writeData = (memToReg_W == 1) ? memDataOut_W : (memToReg_W == 0) ? aluResult_W : 32'dx;
+	assign writeData = memToReg_W ? memDataOut_W : aluResult_W;
 
 	////////////////////////////////////////////////////////////////
 	//////////////// Components
@@ -134,14 +133,14 @@ module mips_proc ();
 	register_32	PC (pcValue, pcNext, pcWrite, pcReset, clk);
 	ram		instr_mem (instruction, instrIn, instrAddr, instrWrite, instrRead, 1'b1, 1'bx, clk);
 	RegisterFile	reg_file (regData1, regData2, readReg1, readReg2, writeReg, writeData, regWrite, clk);
-	ALU		alu (aluZero, aluResult, aluOprd1, aluOprd2, aluOp);
+	ALU		alu (aluZero, aluResult, aluOprd1, aluOprd2, aluShamt, aluOp);
 	ram		data_mem (memDataOut, memDataIn, memAddr, memWrite, memRead, loadFullWord, loadSigned, clk);
 
 	// CONTROL UNIT
 	ALU_Controller	aluControl (aluOp_D, instrOpCode, instrFunct);
-	control_unit	CU (branch_D, aluSrc_D, regDst_D, memToReg_D, regWrite_D,
+	control_unit	CU (branch_D, shift_D, aluSrc_D, regDst_D, memToReg_D, regWrite_D,
 				memWrite_D, memRead_D, loadFullWord_D, loadSigned_D,
-				instrOpCode);
+				instrOpCode, instrFunct);
 
 	////////////////////////////////////////////////////////////////
 	//////////////// Pipelining
@@ -153,9 +152,9 @@ module mips_proc ();
 	// ID/EXE
 	ID_EXE_ppreg ID_EXE (
 		pcPlus4_E, pcPlus4_D, instrRt_E, instrRt, instrRd_E, instrRd,
-		imm32_E, imm32_D, shamt32_E, shamt32_D,
+		imm32_E, imm32_D, aluShamt, instrShamt,
 		regData1_E, regData1, regData2_E, regData2,
-		aluOp, aluOp_D, aluSrc_E, aluSrc_D,
+		aluOp, aluOp_D, aluSrc_E, aluSrc_D, shift_E, shift_D,
 		regDst_E, regDst_D, regWrite_E, regWrite_D, branch_E, branch_D, memToReg_E, memToReg_D,
 		memWrite_E, memWrite_D, memRead_E, memRead_D,
 		loadFullWord_E, loadFullWord_D, loadSigned_E, loadSigned_D,
@@ -177,61 +176,6 @@ module mips_proc ();
 		regWrite, regWrite_M, memToReg_W, memToReg_M,
 		1'b1, 1'b0, clk);
 
-	/*// When no pipeline registers are connected,
-	// connect the wires directly from stage to stage to simulate a working single-cycle processor.
-
-	// IF -> ID
-	assign pcPlus4_D = pcPlus4_F;
-	assign instruction_D = instruction;
-
-	// ID -> EXE
-	assign pcPlus4_E = pcPlus4_D;
-
-	assign instrRt_E = instrRt;
-	assign instrRd_E = instrRd;
-
-	assign imm32_E = imm32_D;
-	assign shamt32_E = shamt32_D;
-
-	assign regData1_E = regData1;
-	assign regData2_E = regData2;
-	assign regWrite_E = regWrite_D;
-
-	assign aluOp = aluOp_D;
-
-	assign memWrite_E = memWrite_D;
-	assign memRead_E = memRead_D;
-	assign loadFullWord_E = loadFullWord_D;
-	assign loadSigned_E = loadSigned_D;
-
-	assign branch_E = branch_D;
-	assign aluSrc_E = aluSrc_D;
-	assign regDst_E = regDst_D;
-	assign memToReg_E = memToReg_D;
-
-	// EXE -> MEM
-	assign regData2_M = regData2_E;
-
-	assign writeReg_M = writeReg_E;
-
-	assign aluResult_M = aluResult;
-
-	assign memWrite = memWrite_E;
-	assign memRead = memRead_E;
-	assign loadFullWord = loadFullWord_E;
-	assign loadSigned = loadSigned_E;
-
-	assign memToReg_M = memToReg_E;
-	assign regWrite_M = regWrite_E;
-
-	// MEM -> WB
-	assign memDataOut_W = memDataOut;
-	assign aluResult_W = aluResult_M;
-	assign memToReg_W = memToReg_M;
-	assign writeReg = writeReg_M;
-	assign regWrite = regWrite_M;
-*/
-
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
 	// -----------------------------------
@@ -251,15 +195,15 @@ module mips_proc ();
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
-		/*program[0] <= 32'h20100002; // addi $s0, $0, 2
-		program[1] <= 32'h22100003; // addi $s0, $s0, 3*/
 
 		program[0] <= 32'h20110005; // addi $17, $0, 5
 		program[1] <= 32'h20100002; // addi $16, $0, 2
 		program[2] <= 32'h2012fffd; // addi $18, $0, -3
 		program[3] <= 32'hac000005; // sw $0, 5($0)
 		program[4] <= 32'h00009820; // add $19, $0, $0
-		program[5] <= 32'h8e280000; // lw $8, 0($17)
+		//program[5] <= 32'h8e280000; // lw $8, 0($17)
+		//program[5] <= 32'h001198c0; // sll $19, $17, 3
+		program[5] <= 32'h00119842; // srl $19, $17, 2
 		program[6] <= 32'h02304822; // sub $9, $17, $16
 
 		// ------------------------------------------------------

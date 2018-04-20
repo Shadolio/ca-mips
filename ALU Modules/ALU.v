@@ -1,15 +1,16 @@
-module ALU(Zero, ALU_Result, InputData1, InputData2, ALU_Control);
+module ALU(Zero, ALU_Result, InputData1, InputData2, shamt, ALU_Control);
+input [31:0] InputData1, InputData2;
+input [4:0] shamt;
+input [3:0] ALU_Control;
 output Zero;
 output reg [31:0] ALU_Result;
-input wire [31:0] InputData1;
-input wire [31:0] InputData2;
-input wire [3:0] ALU_Control;
-reg [31:0] tmp1;
-reg [31:0] tmp2;
 
-assign Zero = (ALU_Result == 0)? 1 : 0;
+//reg [31:0] tmp1;
+//reg [31:0] tmp2;
 
-always @ (InputData1,InputData2,ALU_Control)
+assign Zero = (ALU_Result == 0) ? 1 : 0;
+
+always @ (InputData1, InputData2, shamt, ALU_Control)
 begin
 	case(ALU_Control)
 // ADD
@@ -22,11 +23,13 @@ begin
 		       end
 //SLL		
 		4'd3: begin 
-			ALU_Result <= InputData1 << InputData2;
+			//ALU_Result <= InputData1 << InputData2;
+			ALU_Result <= InputData2 << shamt;
 		       end
 //SRL		
 		4'd4: begin 
-			ALU_Result <= InputData1 >> InputData2;
+			//ALU_Result <= InputData1 >> InputData2;
+			ALU_Result <= InputData2 >> shamt;
 		       end
 //AND		
 		4'd5: begin 

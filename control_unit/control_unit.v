@@ -1,13 +1,15 @@
 module control_unit (
-			beq, aluSrc, regDst, memToReg,
+			beq, shift, aluSrc, regDst, memToReg,
 			regWrite, memWrite, memRead, loadFullWord, loadSigned,
-			instrOpCode);
+			instrOpCode, instrFunct);
 
-	input [5:0] instrOpCode;
-	output beq, aluSrc, regDst, memToReg;
+	input [5:0] instrOpCode, instrFunct;
+	output beq, shift, aluSrc, regDst, memToReg;
 	output regWrite, memWrite, memRead, loadFullWord, loadSigned;
 
 	assign beq = (instrOpCode == 6'h4); // BEQ instruction opcode
+
+	assign shift = (instrOpCode == 6'h0) & (instrFunct == 6'h0 | instrFunct == 6'h2); // SRL/SLL instruction opcode
 
 	// I-type instructions (except BEQ): 1, otherwise (R-type and BEQ) : 0
 	assign aluSrc = (instrOpCode == 6'h23 | instrOpCode == 6'h2B		// LW, SW,
@@ -30,15 +32,15 @@ endmodule
 
 module control_unit_tb ();
 
-	reg [5:0] instrOpCode;
+	reg [5:0] instrOpCode, instrFunct;
 
-	wire beq, aluSrc, regDst, memToReg;
+	wire beq, shift, aluSrc, regDst, memToReg;
 	wire regWrite, memWrite, memRead, loadFullWord, loadSigned;
 
 	control_unit CU (
-			beq, aluSrc, regDst, memToReg,
+			beq, shift, aluSrc, regDst, memToReg,
 			regWrite, memWrite, memRead, loadFullWord, loadSigned,
-			instrOpCode);
+			instrOpCode, instrFunct);
 
 	initial begin
 
