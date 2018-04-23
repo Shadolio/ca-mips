@@ -5,7 +5,7 @@ module ram (dataOut, dataIn, address, write, read, word, sign, clk);
 	input [31:0] address, dataIn;
 	output reg [31:0] dataOut;
 
-	parameter memLimit = 8'd255; // currently supports 2^27 addresses
+	parameter memLimit = 32'd64;
 
 	reg [7:0] memory[memLimit : 0];
 
@@ -84,36 +84,31 @@ module ram_tb ();
 	initial begin
 		
 		clk <= 0;
-		address <= 32'd200;
+		address <= 32'd24;
 		wordIn <= 32'hF00FF176;
 		word <= 1;
 		sign <= 1;
 		read <= 1;
 		write <= 0;
 
-		#10 $display("Value at address %d at start is: %d", address, wordOut);
+		#5 $display("Value at address %d at start is: %d", address, wordOut);
 
-		write = 1;
-		clk = 1;
-
-		$display("Value %d is loaded at address %d", wordIn, address);
-
-		#10 clk = 0;
-		write = 0;
+		write <= 1;
+		#5 clk <= 1;
+		#5 $display("Value %d is loaded at address %d", wordIn, address);
+		clk <= 0;
+		write <= 0;
 
 		$display("Value at address %d is now: %d", address, wordOut);
 
-		word = 0;
+		word <= 0;
+		#5 $display("Half word at address %d is now: %d", address, wordOut);
 
-		#10 $display("Half word at address %d is now: %d", address, wordOut);
+		sign <= 0;
+		#5 $display("Half word (unsigned) at address %d is now: %d", address, wordOut);
 
-		sign = 0;
-
-		#10 $display("Half word (unsigned) at address %d is now: %d", address, wordOut);
-
-		address = 32'd10;
-
-		#10 $display("Value at address %d is now: %d", address, wordOut);
+		address <= 32'd10;
+		#5 $display("Value at address %d is now: %d", address, wordOut);
 
 	end
 

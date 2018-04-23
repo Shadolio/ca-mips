@@ -179,9 +179,9 @@ module mips_proc ();
 	// Program initialising and tracking
 	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
 	// -----------------------------------
-	parameter programLength = 3'd7;	// 1. NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
-	reg [2:0] instrI;		// 2. NUMBER OF BITS MUST BE ENOUGH TO REPRESENT paramLength
-	reg [31:0] program [7:0];	// 3. SHOULD BE ADDRESS COMPATIBLE WITH instrI.
+	parameter programLength = 5'd7;			// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	reg [4:0] instrI;
+	reg [31:0] program [programLength - 1 : 0];
 
 	assign initInstrAddr = instrI * 4;
 	// -----------------------------------
@@ -205,7 +205,7 @@ module mips_proc ();
 		program[6] <= 32'h02304822; // sub $9, $17, $16
 
 		// ------------------------------------------------------
-		// REMEMBER: IF YOU CHANGE THE NUMBER OF INSTRUCTIONS IN THE PROGRAM, CHANGE THE PARAMETERS ABOVE!! (instrI, programLength, program)
+		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
 
 		instrWrite <= 1;
 		instrRead <= 0;
@@ -213,7 +213,7 @@ module mips_proc ();
 		#5; // The wait is necessary to recognise the signls set above.
 
 		// Load the program to the instruction memory
-		for(instrI = 0; instrI < programLength; instrI = instrI + 1) begin
+		for(instrI = 5'd0; instrI < programLength; instrI = instrI + 1) begin
 
 			instrIn <= program[instrI];
 			#5 clk <= 1;
@@ -234,7 +234,9 @@ module mips_proc ();
 		$display("MIPS processor simulation starting...");
 
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
-		forever #5 clk <= ~clk;
+		repeat(24) #5 clk <= ~clk;
+
+		$display("simulation complete");
 
 		// TODO: At the end, display the values of the whole register file and Data Memory
 
@@ -292,7 +294,7 @@ module mips_proc ();
 
 		$display("-------- ======== -------- -------- --------");
 		$display("DECODE");
-		$display("PC+4: %d, Instruction: %b (%h)", pcPlus4_D, instruction_D, instruction_D);
+		$display("Instruction: %b (%h), PC+4: %d", instruction_D, instruction_D, pcPlus4_D);
 		$display("OpCode: %h, Funct: %h", instrOpCode, instrFunct);
 		$display("Rs: %b, Rt: %b, Rd: %b, shamt: %b", instrRs, instrRt, instrRd, instrShamt);
 		$display("offset/immediate: %b", instrImm);
@@ -309,7 +311,7 @@ module mips_proc ();
 		$display("Regs - data1: %d, data2: %d", regData1_E, regData2_E);
 		$display("Immediate (32 bits): %b", imm32_E);
 		$display(".. shift left by 2: %b", imm32_E << 2);
-		$display(".. add to PC+4: DEC %b", pcOffsetNextInst_E);
+		$display(".. add to PC+4: DEC %d", pcOffsetNextInst_E);
 		$display("ALU --");
 		$display("\toprd1: %d, oprd2: %d, shamt: %d", aluOprd1, aluOprd2, aluShamt);
 		$display("\taluSrc: %b, aluOp: %d", aluSrc_E, aluOp);
@@ -321,8 +323,8 @@ module mips_proc ();
 
 		$display("-------- -------- -------- ======== --------");
 		$display("MEMORY");
-		$display("aluResult / memAddress: %d (HEX %h)", aluResult_M, memAddr);
-		$display("regData2 / memWriteData: %d", regData2_M);
+		$display("aluResult: %d, memAddress: %h", aluResult_M, memAddr);
+		$display("regData2: %d -> memDataIn: %d", regData2_M, memDataIn);
 		$display("memDataOut: %d", memDataOut);
 		$display("memRead: %b, memWrite: %b, fullWord: %b, signed: %b", memRead, memWrite, loadFullWord, loadSigned);
 		$display("Control unit -- memToReg: %b, regWrite: %b", memToReg_M, regWrite_M);
