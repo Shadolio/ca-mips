@@ -203,7 +203,7 @@ module mips_proc ();
 		program[4] <= 32'h00009820; // add $19, $0, $0
 		//program[5] <= 32'h8e280000; // lw $8, 0($17)
 		//program[5] <= 32'h001198c0; // sll $19, $17, 3
-		program[5] <= 32'h00119842; // srl $19, $17, 2
+		program[5] <= 32'h00119842; // srl $19, $17, 1
 		program[6] <= 32'h02304822; // sub $9, $17, $16
 
 		// ------------------------------------------------------
@@ -234,8 +234,6 @@ module mips_proc ();
 		initializing <= 0;	// Now, we are done initializing the processor.
 
 		$display("MIPS processor simulation starting...");
-
-		$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
 		forever #5 clk <= ~clk;
@@ -282,5 +280,62 @@ module mips_proc ();
 
 	always @(posedge clk)
 		cycleNo = cycleNo + 1;
+
+	always @(cycleNo) begin
+
+		$display("-------- -------- -------- -------- --------");
+		$display("Cycle %d", cycleNo);
+		//$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
+
+		$display("======== -------- -------- -------- --------");
+		$display("FETCH");
+		$display("PC: %d, Instruction: %h", pcValue, instruction);
+		$display("PC+4: %d, PCSrc: %b, PCnext: %d", pcPlus4_F, pcSrc, pcNext);
+
+		$display("-------- ======== -------- -------- --------");
+		$display("DECODE");
+		$display("PC+4: %d, Instruction: %b (%h)", pcPlus4_D, instruction_D, instruction_D);
+		$display("OpCode: %h, Funct: %h", instrOpCode, instrFunct);
+		$display("Rs: %b, Rt: %b, Rd: %b, shamt: %b", instrRs, instrRt, instrRd, instrShamt);
+		$display("offset/immediate: %b", instrImm);
+		$display("RegFile -- addr1: %b, data1: %d, addr2: %b, data2: %d",
+			readReg1, regData1, readReg2, regData2);
+		$display("Control unit --");
+		$display("\tbranch: %b, aluSrc: %b, aluOp: %d, regDst: %b", branch_D, aluSrc_D, aluOp_D, regDst_D);
+		$display("\tmemRead: %b, memWrite: %b, fullWord: %b, signed: %b", memRead_D, memWrite_D, loadFullWord_D, loadSigned_D);
+		$display("\tmemToReg: %b, regWrite: %b", memToReg_D, regWrite_D);
+
+		$display("-------- -------- ======== -------- --------");
+		$display("EXECUTE");
+		$display("PC+4: %d, branch: %b", pcPlus4_E, branch_E);
+		$display("Regs - data1: %d, data2: %d", regData1_E, regData2_E);
+		$display("Immediate (32 bits): %b", imm32_E);
+		$display(".. shift left by 2: %b", imm32_E << 2);
+		$display(".. add to PC+4: DEC %b", pcOffsetNextInst_E);
+		$display("ALU --");
+		$display("\toprd1: %d, oprd2: %d, shamt: %d", aluOprd1, aluOprd2, aluShamt);
+		$display("\taluSrc: %b, aluOp: %d", aluSrc_E, aluOp);
+		$display("\tresult: %d, zero: %b", aluResult, aluZero);
+		$display("Rt: %d, Rd: %d, writeReg: %d, regDst: %b", instrRt_E, instrRd_E, writeReg_E, regDst_E);
+		$display("Control unit --");
+		$display("\tmemRead: %b, memWrite: %b, fullWord: %b, signed: %b", memRead_E, memWrite_E, loadFullWord_E, loadSigned_E);
+		$display("\tmemToReg: %b, regWrite: %b", memToReg_E, regWrite_E);
+
+		$display("-------- -------- -------- ======== --------");
+		$display("MEMORY");
+		$display("aluResult / memAddress: %d (HEX %h)", aluResult_M, memAddr);
+		$display("regData2 / memWriteData: %d", regData2_M);
+		$display("memDataOut: %d", memDataOut);
+		$display("memRead: %b, memWrite: %b, fullWord: %b, signed: %b", memRead, memWrite, loadFullWord, loadSigned);
+		$display("Control unit -- memToReg: %b, regWrite: %b", memToReg_M, regWrite_M);
+		$display("writeReg: %d", writeReg_M);
+
+		$display("-------- -------- -------- -------- ========");
+		$display("WRITE BACK");
+		$display("memToReg: %b, memData: %d, alu: %d", memToReg_W, memDataOut_W, aluResult_W);
+		$display("writeReg: %d, regWrite: %b, data: %d", writeReg, regWrite, writeData);
+
+		$display("======== ======== ======== ======== ========");
+	end
 
 endmodule
