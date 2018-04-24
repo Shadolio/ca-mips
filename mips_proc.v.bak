@@ -3,8 +3,7 @@ module mips_proc ();
 	// CLK and tracker for number of cycles elapsed
 	reg clk;
 	reg [15:0] cycleNo;
-	reg initializing;
-	reg ending;
+	reg initializing, ending;
 
 	// Special wires for initialization and reading
 	wire [31:0] initInstrAddr;
@@ -76,6 +75,7 @@ module mips_proc ();
 	wire [31:0] memDataOut_W;
 	wire memWrite_D, memRead_D, loadFullWord_D, loadSigned_D;
 	wire memWrite_E, memRead_E, loadFullWord_E, loadSigned_E;
+	wire memWrite_M, memRead_M, loadFullWord_M, loadSigned_M;
 
 	// Other control signals (intermediate signals and datapath MUX signals)
 	wire branch_E, aluSrc_E, regDst_E;
@@ -122,8 +122,13 @@ module mips_proc ();
 	assign writeReg_E = regDst_E ? instrRd_E : instrRt_E;
 
 	// MEMORY
-	assign memAddr = aluResult_M;
+	assign memAddr = ending ? endMemAddr : aluResult_M;
 	assign memDataIn = regData2_M;
+
+	assign memRead = ending ? 1'b1 : memRead_M;
+	assign memWrite = ending ? 1'b0 : memWrite_M;
+	assign loadFullWord = ending ? 1'b0 : loadFullWord_M;
+	assign loadSigned = ending ? 1'b0 : loadSigned_M;
 
 	// WRITE BACK
 	assign writeData = memToReg_W ? memDataOut_W : aluResult_W;
@@ -168,8 +173,8 @@ module mips_proc ();
 		regData2_M, regData2_E, aluResult_M, aluResult,
 		writeReg_M, writeReg_E,
 		regWrite_M, regWrite_E, memToReg_M, memToReg_E,
-		memWrite, memWrite_E, memRead, memRead_E,
-		loadFullWord, loadFullWord_E, loadSigned, loadSigned_E,
+		memWrite_M, memWrite_E, memRead_M, memRead_E,
+		loadFullWord_M, loadFullWord_E, loadSigned_M, loadSigned_E,
 		1'b1, 1'b0, clk);
 
 	// MEM/WB
@@ -180,11 +185,11 @@ module mips_proc ();
 		1'b1, 1'b0, clk);
 
 	// Program initialising and tracking
-	// HERE -- THESE ARE CHANGED TOGETHER WITH THE TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()".
+	// HERE -- CHANGE IFF (MEMORY SIZE) OR (TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()") CHANGE.
 	// -----------------------------------
 	parameter programLength = 5'd7;			// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
-	reg [4:0] instrI;
 	reg [31:0] program [programLength - 1 : 0];
+	reg [4:0] instrI;
 
 	assign initInstrAddr = instrI * 4;
 	// -----------------------------------
@@ -235,7 +240,7 @@ module mips_proc ();
 		pcWrite <= 1;		// Allow pcNext to be written to PC at next clock edge.
 		initializing <= 0;	// Now, we are done initializing the processor.
 
-		$display("MIPS processor simulation starting...");
+		$display("MIPS processor simulation starting.");
 
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
 		repeat(24) #5 clk <= ~clk;
@@ -250,52 +255,22 @@ module mips_proc ();
 
 		repeat(16) begin
 
-			#5;
-			$display("Reg %d: %d .. Reg %d: %d", endReadReg1, regData1, endReadReg2, regData2);
+			#5 $display("Reg %d: %d .. Reg %d: %d", endReadReg1, regData1, endReadReg2, regData2);
 
 			endReadReg1 <= endReadReg1 + 2;
 			endReadReg2 <= endReadReg2 + 2;
 		end
 
-		$display("After Loop");
+		// Display contents of Data Memory at the end of the simulation
+		endMemAddr <= 32'd0;
+		$display("\nData Memory contents:");
 
-		// TODO: At the end, display the values of the whole register file and Data Memory
+		repeat(64) begin
 
-		/*
-		One way for the register file:
-			Monitor the wire of ReadData1 or ReadData2.
-			Re-initialize the Instruction Memory with 32 instructions of:
-				"add $0, $0, {$0-$31}".
-			(This will cause the value of the RT register to be readable at ReadData2,
-				so we can read it.)
-		Another way:
-			Simply, do the same but read two registers in one instructions.
-			Example: add $0, $0, $1 .. add $0, $2, $3 .. add $0, $4, $5 ...
-				This will get one register at ReadData1 and another on ReadData2.
-				Despite the ALU adding them and trying to put them in $0,
-					we achieved the target of showing their values on the wires.
-		[SHADI RECOMMENDS] Third way:
-			Instead of achieving this by putting instructions in the Instruction Memory,
-				we can multiplex input to the register file,
-				to give it our own address instead of addresses from the datapath.
-				(Similar to what we did when initializing Instruction Memory.)
+			#5 $display("Mem[%h]: %b", endMemAddr, memDataOut[7:0]);
 
-		-------------
-		The advantage of the first two ways are:
-			1) Using existing infrastructure.
-			2) We initialized the Instruction Memory before, so we can apply same method.
-			3) We avoid complexity of more multiplexing and simulating the entire datapath.
-		The advantage of the third way:
-			1) We have full control over the register file at that time.
-			2) We can easily change addresses (one or two) and observe the new value immediately.
-		*/
-
-		/*
-		Same ideas for printing contents of Data Memory,
-		but with favour of third method so
-			we don't add 255*2 instructions (set base address in a register then LW to $0),
-			and we don't wait for the whole cycle to read the memory.
-		*/
+			endMemAddr <= endMemAddr + 1;
+		end
 
 	end
 
