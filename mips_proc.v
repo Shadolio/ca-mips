@@ -4,9 +4,13 @@ module mips_proc ();
 	reg clk;
 	reg [15:0] cycleNo;
 	reg initializing;
+	reg ending;
 
 	// Special wires for initialization and reading
 	wire [31:0] initInstrAddr;
+
+	reg [4:0] endReadReg1, endReadReg2;
+	reg [31:0] endMemAddr;
 
 	////////////////////////////////////////////////////////////////
 	//////////////// WIRES BY COMPONENT (PORTS)
@@ -85,8 +89,8 @@ module mips_proc ();
 
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
-	//assign pcNext = pcSrc ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
 	assign pcSrc = branch_E & aluZero;
+	//assign pcNext = pcSrc ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
 
 	mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
 
@@ -103,14 +107,13 @@ module mips_proc ();
 	assign instrFunct = instruction_D[5:0];
 
 	assign instrShamt = instruction_D[10:6];
-
 	assign instrImm = instruction_D[15:0];
 
 	SignExtender offsetSignExtender (imm32_D, instrImm, 1'b0);
 
 	// Register file
-	assign readReg1 = instrRs;
-	assign readReg2 = instrRt;
+	assign readReg1 = ending ? endReadReg1 : instrRs;
+	assign readReg2 = ending ? endReadReg2 : instrRt;
 
 	// EXECUTE
 	assign aluOprd1 = regData1_E;
@@ -192,6 +195,7 @@ module mips_proc ();
 		$display("Welcome to MIPS processor!");
 		$display("MIPS processor simulation initializing...");
 		initializing <= 1;
+		ending <= 0;
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
@@ -236,7 +240,23 @@ module mips_proc ();
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
 		repeat(24) #5 clk <= ~clk;
 
-		$display("simulation complete");
+		$display("Simulation complete.");
+		ending <= 1;
+
+		// Display contents of register file at the end of the simulation
+		endReadReg1 <= 5'd0;
+		endReadReg2 <= 5'd1;
+		$display("Register file contents:");
+
+		repeat(16) begin
+
+			#5 $display("Reg %d: %d .. Reg %d: %d", endReadReg1, regData1, endReadReg2, regData2);
+
+			endReadReg1 <= endReadReg1 + 2;
+			endReadReg2 <= endReadReg2 + 2;
+		end
+
+		$display("After Loop");
 
 		// TODO: At the end, display the values of the whole register file and Data Memory
 
