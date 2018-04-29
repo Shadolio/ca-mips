@@ -187,7 +187,7 @@ module mips_proc ();
 	// Program initialising and tracking
 	// HERE -- CHANGE IFF (MEMORY SIZE) OR (TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()") CHANGE.
 	// -----------------------------------
-	parameter programLength = 5'd7;			// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	parameter programLength = 5'd17;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
 	reg [31:0] program [programLength - 1 : 0];
 	reg [4:0] instrI;
 
@@ -205,13 +205,32 @@ module mips_proc ();
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
 
-		program[0] <= 32'h20110005; // addi $17, $0, 5
+		/*program[0] <= 32'h20110005; // addi $17, $0, 5
 		program[1] <= 32'h20100002; // addi $16, $0, 2
 		program[2] <= 32'h2012fffd; // addi $18, $0, -3
 		program[3] <= 32'hac000005; // sw $0, 5($0)
 		program[4] <= 32'h00009820; // add $19, $0, $0
 		program[5] <= 32'h00119842; // srl $19, $17, 1
-		program[6] <= 32'h02304822; // sub $9, $17, $16
+		program[6] <= 32'h02304822; // sub $9, $17, $16*/
+
+		// testProg_beq_noFwd
+		program[0] <= 32'h20100005; // addi $16, $0, 5
+		program[1] <= 32'h00000000; // nop
+		program[2] <= 32'h00000000; // nop
+		program[3] <= 32'h12000008; // beq $16, $0, 8
+		program[4] <= 32'h00000000; // nop
+		program[5] <= 32'h00000000; // nop
+		program[6] <= 32'h2210ffff; // addi $16, $16, -1
+		program[7] <= 32'h00000000; // nop
+		program[8] <= 32'h00000000; // nop
+		program[9] <= 32'h1000fff9; // beq $0, $0, 0xfff9
+		program[10] <= 32'h00000000; // nop
+		program[11] <= 32'h00000000; // nop
+		program[12] <= 32'h2002000a; // addi $2, $0, 10
+		program[13] <= 32'h00000000; // nop
+		program[14] <= 32'h00000000; // nop
+		program[15] <= 32'h00000000; // nop
+		program[16] <= 32'h00000000; // nop
 
 		// ------------------------------------------------------
 		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
@@ -243,7 +262,8 @@ module mips_proc ();
 		$display("MIPS processor simulation starting.");
 
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
-		repeat(24) #5 clk <= ~clk;
+//		repeat(24) #5 clk <= ~clk;
+		repeat(100) #5 clk <= ~clk;
 
 		$display("Simulation complete.");
 		ending <= 1;
