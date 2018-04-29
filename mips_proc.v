@@ -5,9 +5,12 @@ module mips_proc ();
 	reg [15:0] cycleNo;
 	reg initializing, ending;
 
-	// Special wires for initialization and reading
+	// Manual address lines for Instruction Memory
+	// to be used at the beginning, to load the test program into the memory.
 	wire [31:0] initInstrAddr;
 
+	// Manual address lines for Register File and Data Memory
+	// to be used at the end of the simulation, to print all their contents.
 	reg [4:0] endReadReg1, endReadReg2;
 	reg [31:0] endMemAddr;
 
@@ -31,7 +34,7 @@ module mips_proc ();
 	reg [31:0] instrIn;
 	reg instrWrite, instrRead;
 
-	//// Instruction Decode
+	//// DECODE
 
 	wire [5:0] instrOpCode, instrFunct;
 	wire [15:0] instrImm;
@@ -47,12 +50,16 @@ module mips_proc ();
 	wire [4:0] writeReg_E, writeReg_M, writeReg;
 	wire regWrite_D, regWrite_E, regWrite_M, regWrite;
 
+	//// EXECUTE
+
 	// ALU
 	wire [31:0] aluOprd1, aluOprd2;
+	wire [4:0] aluShamt;
+	wire [3:0] aluOp_D, aluOp;
 	wire [31:0] aluResult, aluResult_M, aluResult_W;
 	wire aluZero;
-	wire [3:0] aluOp_D, aluOp;
-	wire [4:0] aluShamt;
+
+	//// MEMORY
 
 	// Data Memory
 	wire [31:0] memAddr, memDataIn;
@@ -62,7 +69,10 @@ module mips_proc ();
 	wire memWrite_E, memRead_E, loadFullWord_E, loadSigned_E;
 	wire memWrite_M, memRead_M, loadFullWord_M, loadSigned_M;
 
-	// Other control signals (intermediate signals and datapath MUX signals)
+	//// WRITE BACK
+	//			(No special wires to declare in Write Back)
+
+	//// Other control signals (intermediate signals and datapath MUX signals)
 	wire branch_D, aluSrc_D, regDst_D;
 	wire branch_E, aluSrc_E, regDst_E;
 	wire memToReg_D, memToReg_E, memToReg_M, memToReg_W;
