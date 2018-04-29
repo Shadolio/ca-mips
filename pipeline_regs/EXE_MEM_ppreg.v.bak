@@ -55,7 +55,7 @@ module EXE_MEM_ppreg_tb ();
 
 		aluResultIn <= 32'd4;
 		writeRegIn <= 5'd5;
-		loadFullWordOut <= 1'b0;
+		loadFullWordIn <= 1'b0;
 
 		write <= 1;
 		#5 clk <= 1;

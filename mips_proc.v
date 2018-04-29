@@ -3,6 +3,7 @@ module mips_proc ();
 	// CLK and tracker for number of cycles elapsed
 	reg clk;
 	reg [15:0] cycleNo;
+	reg genClock; 	// 0: stop simulation, 1: keep simulation running (set to 0 when syscall received)
 	reg initializing, ending;
 
 	// Manual address lines for Instruction Memory
@@ -13,6 +14,11 @@ module mips_proc ();
 	// to be used at the end of the simulation, to print all their contents.
 	reg [4:0] endReadReg1, endReadReg2;
 	reg [31:0] endMemAddr;
+
+	// syscall handling
+	// In our simulation, a syscall instruction is exactly equal to a HALT instruction,
+	// or equivelant to write value 10 to $v0 then putting a syscall.
+	wire syscall_D, syscall_E, syscall_M, syscall_W;
 
 	////////////////////////////////////////////////////////////////
 	//////////////// WIRES BY COMPONENT AND STAGES
@@ -110,6 +116,8 @@ module mips_proc ();
 	assign instrShamt = instruction_D[10:6];
 	assign instrImm = instruction_D[15:0];
 
+	assign syscall_D = (instruction_D == 32'h0000000c);
+
 	SignExtender offsetSignExtender (imm32_D, instrImm, 1'b0);
 
 	// Register file
@@ -165,7 +173,8 @@ module mips_proc ();
 
 	// ID/EXE
 	ID_EXE_ppreg ID_EXE (
-		pcPlus4_E, pcPlus4_D, instrRs_E, instrRs, instrRt_E, instrRt, instrRd_E, instrRd,
+		pcPlus4_E, pcPlus4_D, syscall_E, syscall_D,
+		instrRs_E, instrRs, instrRt_E, instrRt, instrRd_E, instrRd,
 		imm32_E, imm32_D, aluShamt, instrShamt,
 		regData1_E, regData1, regData2_E, regData2,
 		aluOp, aluOp_D, aluSrc_E, aluSrc_D, shift_E, shift_D,
@@ -176,6 +185,7 @@ module mips_proc ();
 
 	// EXE/MEM
 	EXE_MEM_ppreg EXE_MEM (
+		syscall_M, syscall_E,
 		regData2_M, regData2_E, aluResult_M, aluResult,
 		writeReg_M, writeReg_E,
 		regWrite_M, regWrite_E, memToReg_M, memToReg_E,
@@ -185,6 +195,7 @@ module mips_proc ();
 
 	// MEM/WB
 	MEM_WB_ppreg MEM_WB (
+		syscall_W, syscall_M,
 		memDataOut_W, memDataOut, aluResult_W, aluResult_M,
 		writeReg, writeReg_M,
 		regWrite, regWrite_M, memToReg_W, memToReg_M,
@@ -194,7 +205,7 @@ module mips_proc ();
 	// Program initialising and tracking
 	// HERE -- CHANGE IFF (MEMORY SIZE) OR (TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()") CHANGE.
 	// -----------------------------------
-	parameter programLength = 5'd13;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	parameter programLength = 5'd08;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
 	reg [31:0] program [programLength - 1 : 0];
 	reg [4:0] instrI;
 
@@ -212,16 +223,17 @@ module mips_proc ();
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
 
-		/*program[0] <= 32'h20110005; // addi $17, $0, 5
+		program[0] <= 32'h20110005; // addi $17, $0, 5
 		program[1] <= 32'h20100002; // addi $16, $0, 2
 		program[2] <= 32'h2012fffd; // addi $18, $0, -3
 		program[3] <= 32'hac000005; // sw $0, 5($0)
 		program[4] <= 32'h00009820; // add $19, $0, $0
 		program[5] <= 32'h00119842; // srl $19, $17, 1
-		program[6] <= 32'h02304822; // sub $9, $17, $16*/
+		program[6] <= 32'h02304822; // sub $9, $17, $16
+		program[7] <= 32'h0000000c; // syscall #end program
 
 		// testProg_beq_noFwd (now with FWD)
-		program[0] <= 32'h20100005;	// addi $16, $0, 5
+		/*program[0] <= 32'h20100005;	// addi $16, $0, 5
 		program[1] <= 32'h12000006;	// beq $16, $0, 0x6
 		program[2] <= 32'h00000000;	// nop
 		program[3] <= 32'h00000000;	// nop
@@ -233,7 +245,7 @@ module mips_proc ();
 		program[9] <= 32'h00000000;	// nop
 		program[10] <= 32'h00000000;	// nop
 		program[11] <= 32'h00000000;	// nop
-		program[12] <= 32'h00000000;	// nop
+		program[12] <= 32'h00000000;	// nop*/
 
 		// ------------------------------------------------------
 		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
@@ -256,17 +268,17 @@ module mips_proc ();
 		// Reset clk and cycleNo variables
 		cycleNo <= 0;		// Initialize cycleNo, a tracking variable
 		clk <= 0;		// Make sure the CLK is 0 (if didn't enter the loop, it'd be StX)
+		genClock <= 1;		// Activate the clock of the simulation
 		instrWrite <= 0;	// We already loaded the program, nothing will be loaded here again.
 		instrRead <= 1;		// Now, allow control unit and rest of data path to execute.
 		pcReset <= 0;		// We just set PC to 0 and now we allow it to change.
 		pcWrite <= 1;		// Allow pcNext to be written to PC at next clock edge.
 		initializing <= 0;	// Now, we are done initializing the processor.
 
-		$display("MIPS processor simulation starting.");
+		#5 $display("MIPS processor simulation starting.");
 
-		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
-//		repeat(24) #5 clk <= ~clk;
-		repeat(90) #5 clk <= ~clk;
+		// START CLOCK GENERATOR
+		while(genClock) #5 clk <= ~clk;
 
 		$display("Simulation complete.");
 		ending <= 1;
@@ -300,11 +312,16 @@ module mips_proc ();
 	always @(posedge clk)
 		cycleNo = cycleNo + 1;
 
+	// When a syscall reaches WriteBack stage, then all preceding instructions have passed,
+	// stop generating lock and exit the generation loop to the printing code.
+	always @(posedge syscall_W)
+		genClock <= 1'b0;
+
 	always @(cycleNo) begin
 
 		$display("-------- -------- -------- -------- --------");
 		$display("Cycle %d", cycleNo);
-		//$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
+		//$display("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
 		$display("======== -------- -------- -------- --------");
 		$display("FETCH");

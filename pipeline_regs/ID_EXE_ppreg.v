@@ -1,5 +1,5 @@
 module ID_EXE_ppreg (
-	pcPlus4Out, pcPlus4In,
+	pcPlus4Out, pcPlus4In, syscallOut, syscallIn,
 	instrRsOut, instrRsIn, instrRtOut, instrRtIn, instrRdOut, instrRdIn,
 	imm32Out, imm32In, shamtOut, shamtIn,
 	regData1Out, regData1In, regData2Out, regData2In,
@@ -15,11 +15,13 @@ module ID_EXE_ppreg (
 	input [3:0] aluOpIn;
 	input aluSrcIn, shiftIn, regDstIn, regWriteIn, branchIn, memToRegIn;
 	input memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
+	input syscallIn;
 	output [31:0] pcPlus4Out, imm32Out, regData1Out, regData2Out;
 	output [4:0] instrRsOut, instrRtOut, instrRdOut, shamtOut;
 	output [3:0] aluOpOut;
 	output aluSrcOut, shiftOut, regDstOut, regWriteOut, branchOut, memToRegOut;
 	output memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
+	output syscallOut;
 
 	wire [4:0] aluOpIn5, aluOpOut5;
 
@@ -50,6 +52,8 @@ module ID_EXE_ppreg (
 	D_FlipFlop loadFullWord	(loadFullWordOut, loadFullWordIn, write, reset, clk);
 	D_FlipFlop loadSignedFF	(loadSignedOut, loadSignedIn, write, reset, clk);
 
+	D_FlipFlop syscallFF	(syscallOut, syscallIn, write, reset, clk);
+
 endmodule
 
 module ID_EXE_ppreg_tb ();
@@ -57,6 +61,7 @@ module ID_EXE_ppreg_tb ();
 	reg [31:0] pcPlus4In, imm32In, regData1In, regData2In;
 	reg [4:0] instrRsIn, instrRtIn, instrRdIn, shamt32In;
 	reg [3:0] aluOpIn;
+	reg syscallIn;
 	reg aluSrcIn, shiftIn, regDstIn, regWriteIn, branchIn, memToRegIn;
 	reg memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
 	wire [31:0] pcPlus4Out, imm32Out, regData1Out, regData2Out;
@@ -64,9 +69,10 @@ module ID_EXE_ppreg_tb ();
 	wire [3:0] aluOpOut;
 	wire aluSrcOut, shiftOut, regDstOut, regWriteOut, branchOut, memToRegOut;
 	wire memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
+	wire syscallOut;
 
 	ID_EXE_ppreg testPPreg (
-		pcPlus4Out, pcPlus4In,
+		pcPlus4Out, pcPlus4In, syscallOut, syscallIn,
 		instrRsOut, instrRsIn, instrRtOut, instrRtIn, instrRdOut, instrRdIn,
 		imm32Out, imm32In, shamt32Out, shamt32In,
 		regData1Out, regData1In, regData2Out, regData2In,

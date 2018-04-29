@@ -1,4 +1,5 @@
 module MEM_WB_ppreg (
+	syscallOut, syscallIn,
 	memDataOut, memDataIn, aluResultOut, aluResultIn,
 	writeRegOut, writeRegIn,
 	regWriteOut, regWriteIn, memToRegOut, memToRegIn,
@@ -7,9 +8,11 @@ module MEM_WB_ppreg (
 	input [31:0] memDataIn, aluResultIn;
 	input [4:0] writeRegIn;
 	input regWriteIn, memToRegIn;
+	input syscallIn;
 	output [31:0] memDataOut, aluResultOut;
 	output [4:0] writeRegOut;
 	output regWriteOut, memToRegOut;
+	output syscallOut;
 
 	register_32 memDataReg (memDataOut, memDataIn, write, reset, clk);
 	register_32 aluResultReg (aluResultOut, aluResultIn, write, reset, clk);
@@ -19,6 +22,8 @@ module MEM_WB_ppreg (
 	D_FlipFlop regWriteFF	(regWriteOut, regWriteIn, write, reset, clk);
 	D_FlipFlop memToRegFF	(memToRegOut, memToRegIn, write, reset, clk);
 
+	D_FlipFlop syscallFF	(syscallOut, syscallIn, write, reset, clk);
+
 endmodule
 
 module MEM_WB_ppreg_tb ();
@@ -26,11 +31,14 @@ module MEM_WB_ppreg_tb ();
 	reg [31:0] memDataIn, aluResultIn;
 	reg [4:0] writeRegIn;
 	reg regWriteIn, memToRegIn;
+	reg syscallIn;
 	wire [31:0] memDataOut, aluResultOut;
 	wire [4:0] writeRegOut;
 	wire regWriteOut, memToRegOut;
+	wire syscallOut;
 
 	MEM_WB_ppreg testPPreg (
+		syscallOut, syscallIn,
 		memDataOut, memDataIn, aluResultOut, aluResultIn,
 		writeRegOut, writeRegIn,
 		regWriteOut, regWriteIn, memToRegOut, memToRegIn,

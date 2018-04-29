@@ -1,4 +1,5 @@
 module MEM_WB_ppreg (
+	syscallOut, syscallIn,
 	memDataOut, memDataIn, aluResultOut, aluResultIn,
 	writeRegOut, writeRegIn,
 	regWriteOut, regWriteIn, memToRegOut, memToRegIn,
@@ -31,20 +32,19 @@ module MEM_WB_ppreg_tb ();
 	wire regWriteOut, memToRegOut;
 
 	MEM_WB_ppreg testPPreg (
-		regData2Out, regData2In, aluResultOut, aluResultIn,
+		syscallOut, syscallIn,
+		memDataOut, memDataIn, aluResultOut, aluResultIn,
 		writeRegOut, writeRegIn,
 		regWriteOut, regWriteIn, memToRegOut, memToRegIn,
-		memWriteOut, memWriteIn, memReadOut, memReadIn,
-		loadFullWordOut, loadFullWordIn, loadSignedOut, loadSignedIn,
 		write, reset, clk);
 
 	initial begin
 
-		$monitor("ALU in: %h, ALU out: %h, writeReg in: %h, writeReg out: %h, LW in: %b, LW out: %b", aluResultIn, aluResultOut, writeRegIn, writeRegOut, loadFullWordIn, loadFullWordOut);
+		$monitor("ALU in: %h, ALU out: %h, writeReg in: %h, writeReg out: %h, memToRegIin: %b, memToReg out: %b", aluResultIn, aluResultOut, writeRegIn, writeRegOut, memToRegIn, memToRegOut);
 
 		aluResultIn <= 32'd4;
 		writeRegIn <= 5'd5;
-		loadFullWordIn <= 1'b0;
+		memToRegIn <= 1'b1;
 
 		write <= 1;
 		#5 clk <= 1;

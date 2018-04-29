@@ -1,4 +1,5 @@
 module EXE_MEM_ppreg (
+	syscallOut, syscallIn,
 	regData2Out, regData2In, aluResultOut, aluResultIn,
 	writeRegOut, writeRegIn,
 	regWriteOut, regWriteIn, memToRegOut, memToRegIn,
@@ -10,10 +11,12 @@ module EXE_MEM_ppreg (
 	input [4:0] writeRegIn;
 	input regWriteIn, memToRegIn;
 	input memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
+	input syscallIn;
 	output [31:0] regData2Out, aluResultOut;
 	output [4:0] writeRegOut;
 	output regWriteOut, memToRegOut;
 	output memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
+	output syscallOut;
 
 	register_32 regData2Reg (regData2Out, regData2In, write, reset, clk);
 	register_32 aluResultReg (aluResultOut, aluResultIn, write, reset, clk);
@@ -28,6 +31,8 @@ module EXE_MEM_ppreg (
 	D_FlipFlop loadFullWord	(loadFullWordOut, loadFullWordIn, write, reset, clk);
 	D_FlipFlop loadSignedFF	(loadSignedOut, loadSignedIn, write, reset, clk);
 
+	D_FlipFlop syscallFF	(syscallOut, syscallIn, write, reset, clk);
+
 endmodule
 
 module EXE_MEM_ppreg_tb ();
@@ -36,12 +41,15 @@ module EXE_MEM_ppreg_tb ();
 	reg [4:0] writeRegIn;
 	reg regWriteIn, memToRegIn;
 	reg memWriteIn, memReadIn, loadFullWordIn, loadSignedIn;
+	reg syscallIn;
 	wire [31:0] regData2Out, aluResultOut;
 	wire [4:0] writeRegOut;
 	wire regWriteOut, memToRegOut;
 	wire memWriteOut, memReadOut, loadFullWordOut, loadSignedOut;
+	wire syscallOut;
 
 	EXE_MEM_ppreg testPPreg (
+		syscallOut, syscallIn,
 		regData2Out, regData2In, aluResultOut, aluResultIn,
 		writeRegOut, writeRegIn,
 		regWriteOut, regWriteIn, memToRegOut, memToRegIn,
