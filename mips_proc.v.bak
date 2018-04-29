@@ -12,8 +12,10 @@ module mips_proc ();
 	reg [31:0] endMemAddr;
 
 	////////////////////////////////////////////////////////////////
-	//////////////// WIRES BY COMPONENT (PORTS)
+	//////////////// WIRES BY COMPONENT AND STAGES
 	////////////////////////////////////////////////////////////////
+
+	//// FETCH
 
 	// PC
 	wire [31:0] pcValue, pcNext;
@@ -24,63 +26,50 @@ module mips_proc ();
 	reg pcReset;
 
 	// Instruction Memory
-	wire [31:0] instruction, instrAddr;
+	wire [31:0] instrAddr;
+	wire [31:0] instruction, instruction_D;
 	reg [31:0] instrIn;
 	reg instrWrite, instrRead;
 
-	// Register File
-	wire [31:0] regData1, regData2, writeData;
-	wire [4:0] readReg1, readReg2, writeReg;
-	wire regWrite;
+	//// Instruction Decode
 
-	// ALU
-	wire [31:0] aluResult, aluOprd1, aluOprd2;
-	wire aluZero;
-	wire [3:0] aluOp;
-	wire [4:0] aluShamt;
-
-	// Data Memory
-	wire [31:0] memDataOut, memAddr, memDataIn;
-	wire memWrite, memRead, loadFullWord, loadSigned;
-
-	// Other control signals (intermediate signals and datapath MUX signals)
-	wire branch_D, aluSrc_D, regDst_D, memToReg_D;
-
-	////////////////////////////////////////////////////////////////
-	//////////////// PIPELINING/STAGING WIRES
-	////////////////////////////////////////////////////////////////
-
-	// Instruction Decode
-	wire [31:0] instruction_D;
-	wire [15:0] instrImm;
 	wire [5:0] instrOpCode, instrFunct;
+	wire [15:0] instrImm;
 	wire [4:0] instrRs, instrRt, instrRd, instrShamt;
 	wire [4:0] instrRt_E, instrRd_E;
 	wire [31:0] imm32_D, imm32_E;
 
-	// Register file
-	wire [31:0] regData1_E;
-	wire [31:0] regData2_E, regData2_M;
-	wire [4:0] writeReg_E, writeReg_M;
-	wire regWrite_D, regWrite_E, regWrite_M;
+	// Register File
+	wire [31:0] regData1, regData1_E;
+	wire [31:0] regData2, regData2_E, regData2_M;
+	wire [31:0] writeData;
+	wire [4:0] readReg1, readReg2;
+	wire [4:0] writeReg_E, writeReg_M, writeReg;
+	wire regWrite_D, regWrite_E, regWrite_M, regWrite;
 
 	// ALU
-	wire [31:0] aluResult_M, aluResult_W;
-	wire [3:0] aluOp_D;
-	wire shift_D, shift_E;
+	wire [31:0] aluOprd1, aluOprd2;
+	wire [31:0] aluResult, aluResult_M, aluResult_W;
+	wire aluZero;
+	wire [3:0] aluOp_D, aluOp;
+	wire [4:0] aluShamt;
 
 	// Data Memory
-	wire [31:0] memDataOut_W;
+	wire [31:0] memAddr, memDataIn;
+	wire [31:0] memDataOut, memDataOut_W;
+	wire memWrite, memRead, loadFullWord, loadSigned;
 	wire memWrite_D, memRead_D, loadFullWord_D, loadSigned_D;
 	wire memWrite_E, memRead_E, loadFullWord_E, loadSigned_E;
 	wire memWrite_M, memRead_M, loadFullWord_M, loadSigned_M;
 
 	// Other control signals (intermediate signals and datapath MUX signals)
+	wire branch_D, aluSrc_D, regDst_D, memToReg_D;
 	wire branch_E, aluSrc_E, regDst_E;
 	wire memToReg_E, memToReg_M, memToReg_W;
+	wire shift_D, shift_E;
 
 	////////////////////////////////////////////////////////////////
-	//////////////// WIRES BY STAGE (Wires, links and MUX's)
+	//////////////// WIRE CONNECTIONS BY STAGE
 	////////////////////////////////////////////////////////////////
 
 	// INSTRUCTION FETCH
