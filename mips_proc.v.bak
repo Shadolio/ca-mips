@@ -38,8 +38,10 @@ module mips_proc ();
 
 	wire [5:0] instrOpCode, instrFunct;
 	wire [15:0] instrImm;
-	wire [4:0] instrRs, instrRt, instrRd, instrShamt;
-	wire [4:0] instrRt_E, instrRd_E;
+	wire [4:0] instrRs, instrRs_E;
+	wire [4:0] instrRt, instrRt_E;
+	wire [4:0] instrRd, instrRd_E;
+	wire [4:0] instrShamt;
 	wire [31:0] imm32_D, imm32_E;
 
 	// Register File
@@ -53,7 +55,7 @@ module mips_proc ();
 	//// EXECUTE
 
 	// ALU
-	wire [31:0] aluOprd1, aluOprd2;
+	wire [31:0] aluOprd1, aluOprd2_FWD, aluOprd2;
 	wire [4:0] aluShamt;
 	wire [3:0] aluOp_D, aluOp;
 	wire [31:0] aluResult, aluResult_M, aluResult_W;
@@ -70,13 +72,16 @@ module mips_proc ();
 	wire memWrite_M, memRead_M, loadFullWord_M, loadSigned_M;
 
 	//// WRITE BACK
-	//			(No special wires to declare here)
+	//			(No special wires to declare in Write Back)
 
 	//// Other control signals (intermediate signals and datapath MUX signals)
 	wire branch_D, aluSrc_D, regDst_D;
 	wire branch_E, aluSrc_E, regDst_E;
 	wire memToReg_D, memToReg_E, memToReg_M, memToReg_W;
 	wire shift_D, shift_E;
+
+	// Forwarding signals
+	wire [1:0] fwdA, fwdB;
 
 	////////////////////////////////////////////////////////////////
 	//////////////// WIRE CONNECTIONS BY STAGE
@@ -87,7 +92,6 @@ module mips_proc ();
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
 	assign pcSrc = branch_E & aluZero;
-	//assign pcNext = pcSrc ? pcOffsetNextInst_E : (pcSrc == 0 | pcSrc == 1'bx) ? pcPlus4_F : 32'd0;
 
 	mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
 
@@ -113,8 +117,12 @@ module mips_proc ();
 	assign readReg2 = ending ? endReadReg2 : instrRt;
 
 	// EXECUTE
-	assign aluOprd1 = regData1_E;
-	assign aluOprd2 = aluSrc_E ? imm32_E : regData2_E;
+	//assign aluOprd1 = regData1_E;
+	//assign aluOprd2 = aluSrc_E ? imm32_E : regData2_E;
+	assign aluOprd2 = aluSrc_E ? imm32_E : aluOprd2_FWD;
+
+	mux_4_x_32 aluOprd1_fwdMux (aluOprd1, regData1_E, writeData, aluResult_M, 32'dx, regData1_E, fwdA);
+	mux_4_x_32 aluOprd2_fwdMux (aluOprd2_FWD, regData2_E, writeData, aluResult_M, 32'dx, regData2_E, fwdB);
 
 	assign writeReg_E = regDst_E ? instrRd_E : instrRt_E;
 
@@ -147,8 +155,11 @@ module mips_proc ();
 				memWrite_D, memRead_D, loadFullWord_D, loadSigned_D,
 				instrOpCode, instrFunct);
 
+	// FORWARDING UNIT
+	fwd_unit	FU (fwdA, fwdB, instrRs_E, instrRt_E, writeReg_M, writeReg, regWrite_M, regWrite);
+
 	////////////////////////////////////////////////////////////////
-	//////////////// Pipelining
+	//////////////// Pipeline registers
 	////////////////////////////////////////////////////////////////
 
 	// IF/ID
@@ -156,7 +167,7 @@ module mips_proc ();
 
 	// ID/EXE
 	ID_EXE_ppreg ID_EXE (
-		pcPlus4_E, pcPlus4_D, instrRt_E, instrRt, instrRd_E, instrRd,
+		pcPlus4_E, pcPlus4_D, instrRs_E, instrRs, instrRt_E, instrRt, instrRd_E, instrRd,
 		imm32_E, imm32_D, aluShamt, instrShamt,
 		regData1_E, regData1, regData2_E, regData2,
 		aluOp, aluOp_D, aluSrc_E, aluSrc_D, shift_E, shift_D,
@@ -181,10 +192,11 @@ module mips_proc ();
 		regWrite, regWrite_M, memToReg_W, memToReg_M,
 		1'b1, 1'b0, clk);
 
+
 	// Program initialising and tracking
 	// HERE -- CHANGE IFF (MEMORY SIZE) OR (TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()") CHANGE.
 	// -----------------------------------
-	parameter programLength = 5'd17;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	parameter programLength = 5'd13;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
 	reg [31:0] program [programLength - 1 : 0];
 	reg [4:0] instrI;
 
@@ -210,24 +222,20 @@ module mips_proc ();
 		program[5] <= 32'h00119842; // srl $19, $17, 1
 		program[6] <= 32'h02304822; // sub $9, $17, $16*/
 
-		// testProg_beq_noFwd
-		program[0] <= 32'h20100005; // addi $16, $0, 5
-		program[1] <= 32'h00000000; // nop
-		program[2] <= 32'h00000000; // nop
-		program[3] <= 32'h12000008; // beq $16, $0, 8
-		program[4] <= 32'h00000000; // nop
-		program[5] <= 32'h00000000; // nop
-		program[6] <= 32'h2210ffff; // addi $16, $16, -1
-		program[7] <= 32'h00000000; // nop
-		program[8] <= 32'h00000000; // nop
-		program[9] <= 32'h1000fff9; // beq $0, $0, 0xfff9
-		program[10] <= 32'h00000000; // nop
-		program[11] <= 32'h00000000; // nop
-		program[12] <= 32'h2002000a; // addi $2, $0, 10
-		program[13] <= 32'h00000000; // nop
-		program[14] <= 32'h00000000; // nop
-		program[15] <= 32'h00000000; // nop
-		program[16] <= 32'h00000000; // nop
+		// testProg_beq_noFwd (now with FWD)
+		program[0] <= 32'h20100005;	// addi $16, $0, 5
+		program[1] <= 32'h12000006;	// beq $16, $0, 0x6
+		program[2] <= 32'h00000000;	// nop
+		program[3] <= 32'h00000000;	// nop
+		program[4] <= 32'h2210ffff;	// addi $16, $16, -1
+		program[5] <= 32'h1000fffb;	// beq $0, $0, 0xfffb
+		program[6] <= 32'h00000000;	// nop
+		program[7] <= 32'h00000000;	// nop
+		program[8] <= 32'h2002000a;	// addi $2, $0, 10
+		program[9] <= 32'h00000000;	// nop
+		program[10] <= 32'h00000000;	// nop
+		program[11] <= 32'h00000000;	// nop
+		program[12] <= 32'h00000000;	// nop
 
 		// ------------------------------------------------------
 		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
@@ -260,7 +268,7 @@ module mips_proc ();
 
 		// START CLOCK GENERATOR -- TODO: Stop when program ends or something like that
 //		repeat(24) #5 clk <= ~clk;
-		repeat(100) #5 clk <= ~clk;
+		repeat(90) #5 clk <= ~clk;
 
 		$display("Simulation complete.");
 		ending <= 1;
@@ -326,10 +334,11 @@ module mips_proc ();
 		$display(".. shift left by 2: %b", imm32_E << 2);
 		$display(".. add to PC+4: DEC %d", pcOffsetNextInst_E);
 		$display("ALU --");
+		$display("\tfwdA: %b, fwdB: %b", fwdA, fwdB);
 		$display("\toprd1: %d, oprd2: %d, shamt: %d", aluOprd1, aluOprd2, aluShamt);
 		$display("\taluSrc: %b, aluOp: %d", aluSrc_E, aluOp);
 		$display("\tresult: %d, zero: %b", aluResult, aluZero);
-		$display("Rt: %d, Rd: %d, writeReg: %d, regDst: %b", instrRt_E, instrRd_E, writeReg_E, regDst_E);
+		$display("Rs: %d, Rt: %d, Rd: %d, writeReg: %d, regDst: %b", instrRs_E, instrRt_E, instrRd_E, writeReg_E, regDst_E);
 		$display("Control unit --");
 		$display("\tmemRead: %b, memWrite: %b, fullWord: %b, signed: %b", memRead_E, memWrite_E, loadFullWord_E, loadSigned_E);
 		$display("\tmemToReg: %b, regWrite: %b", memToReg_E, regWrite_E);
