@@ -15,6 +15,10 @@ module mips_proc ();
 	reg [4:0] endReadReg1, endReadReg2;
 	reg [31:0] endMemAddr;
 
+	// Pipeline registers control
+	reg reset_IF_ID, reset_ID_EXE, reset_EXE_MEM, reset_MEM_WB;
+	reg write_IF_ID, write_ID_EXE, write_EXE_MEM, write_MEM_WB;
+
 	// syscall handling
 	// In our simulation, a syscall instruction is exactly equal to a HALT instruction,
 	// or equivelant to write value 10 to $v0 then putting a syscall.
@@ -98,8 +102,9 @@ module mips_proc ();
 	assign pcPlus4_F = pcValue + 4;
 	assign pcOffsetNextInst_E = pcPlus4_E + (imm32_E << 2);
 	assign pcSrc = branch_E & aluZero;
+	assign pcNext = pcSrc ? pcOffsetNextInst_E : pcPlus4_F;
 
-	mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
+	//mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
 
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
 
@@ -169,7 +174,7 @@ module mips_proc ();
 	////////////////////////////////////////////////////////////////
 
 	// IF/ID
-	IF_ID_ppreg IF_ID (instruction_D, pcPlus4_D, instruction, pcPlus4_F, 1'b1, 1'b0, clk);
+	IF_ID_ppreg IF_ID (instruction_D, pcPlus4_D, instruction, pcPlus4_F, write_IF_ID, reset_IF_ID, clk);
 
 	// ID/EXE
 	ID_EXE_ppreg ID_EXE (
@@ -181,7 +186,7 @@ module mips_proc ();
 		regDst_E, regDst_D, regWrite_E, regWrite_D, branch_E, branch_D, memToReg_E, memToReg_D,
 		memWrite_E, memWrite_D, memRead_E, memRead_D,
 		loadFullWord_E, loadFullWord_D, loadSigned_E, loadSigned_D,
-		1'b1, 1'b0, clk);
+		write_ID_EXE, reset_ID_EXE, clk);
 
 	// EXE/MEM
 	EXE_MEM_ppreg EXE_MEM (
@@ -191,7 +196,7 @@ module mips_proc ();
 		regWrite_M, regWrite_E, memToReg_M, memToReg_E,
 		memWrite_M, memWrite_E, memRead_M, memRead_E,
 		loadFullWord_M, loadFullWord_E, loadSigned_M, loadSigned_E,
-		1'b1, 1'b0, clk);
+		write_EXE_MEM, reset_EXE_MEM, clk);
 
 	// MEM/WB
 	MEM_WB_ppreg MEM_WB (
@@ -199,7 +204,7 @@ module mips_proc ();
 		memDataOut_W, memDataOut, aluResult_W, aluResult_M,
 		writeReg, writeReg_M,
 		regWrite, regWrite_M, memToReg_W, memToReg_M,
-		1'b1, 1'b0, clk);
+		write_MEM_WB, reset_MEM_WB, clk);
 
 
 	// Program initialising and tracking
@@ -219,6 +224,10 @@ module mips_proc ();
 		$display("MIPS processor simulation initializing...");
 		initializing <= 1;
 		ending <= 0;
+
+		// Set all Reset signals for pipeline registers, and their write signals to zero
+		{ reset_IF_ID, reset_ID_EXE, reset_EXE_MEM, reset_MEM_WB } <= 4'b1111;
+		{ write_IF_ID, write_ID_EXE, write_EXE_MEM, write_MEM_WB } <= 4'b0000;
 
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
@@ -242,10 +251,8 @@ module mips_proc ();
 		program[6] <= 32'h00000000;	// nop
 		program[7] <= 32'h00000000;	// nop
 		program[8] <= 32'h2002000a;	// addi $2, $0, 10
-		program[9] <= 32'h00000000;	// nop
-		program[10] <= 32'h00000000;	// nop
-		program[11] <= 32'h00000000;	// nop
-		program[12] <= 32'h00000000;	// nop*/
+		program[9] <= 32'h0000000c;	// syscall
+		*/
 
 		// ------------------------------------------------------
 		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
@@ -274,6 +281,10 @@ module mips_proc ();
 		pcReset <= 0;		// We just set PC to 0 and now we allow it to change.
 		pcWrite <= 1;		// Allow pcNext to be written to PC at next clock edge.
 		initializing <= 0;	// Now, we are done initializing the processor.
+
+		// Now, we want to allow the pipeline registers to keep getting updated normally.
+		{ reset_IF_ID, reset_ID_EXE, reset_EXE_MEM, reset_MEM_WB } <= 4'b0000;
+		{ write_IF_ID, write_ID_EXE, write_EXE_MEM, write_MEM_WB } <= 4'b1111;
 
 		#5 $display("MIPS processor simulation starting.");
 
@@ -319,9 +330,9 @@ module mips_proc ();
 
 	always @(cycleNo) begin
 
-		$display("-------- -------- -------- -------- --------");
+		$display("\n-------- -------- -------- -------- --------");
 		$display("Cycle %d", cycleNo);
-		//$monitor("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
+		//$display("Cycle %d -- PC: %d, Instruction: %h", cycleNo, pcValue, instruction);
 
 		$display("======== -------- -------- -------- --------");
 		$display("FETCH");
@@ -372,7 +383,7 @@ module mips_proc ();
 		$display("memToReg: %b, memData: %d, alu: %d", memToReg_W, memDataOut_W, aluResult_W);
 		$display("writeReg: %d, regWrite: %b, data: %d", writeReg, regWrite, writeData);
 
-		$display("======== ======== ======== ======== ========");
+		$display("======== ======== ======== ======== ========\n");
 	end
 
 endmodule

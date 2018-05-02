@@ -1,18 +1,10 @@
-{C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/MEM_WB_ppreg.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/MEM_WB_ppreg.v}
+{C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_4_x_32.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/misc_tools/mux_4_x_32.v}
 Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
--- Compiling module MEM_WB_ppreg
--- Compiling module MEM_WB_ppreg_tb
+-- Compiling module mux_4_x_32
+-- Compiling module mux_4_x_32_tb
 
 Top level modules:
-	MEM_WB_ppreg_tb
-
-} {} {}} {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/EXE_MEM_ppreg.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/pipeline_regs/EXE_MEM_ppreg.v}
-Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
--- Compiling module EXE_MEM_ppreg
--- Compiling module EXE_MEM_ppreg_tb
-
-Top level modules:
-	EXE_MEM_ppreg_tb
+	mux_4_x_32_tb
 
 } {} {}} {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v} {1 {vlog -work work -stats=none {C:/Users/shadi/Documents/GUC/CSEN601 (CA)/Project/ca-mips/memory/program_counter.v}
 Model Technology ModelSim ALTERA vlog 10.4b Compiler 2015.05 May 27 2015
