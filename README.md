@@ -1,3 +1,4 @@
+
 # ca-mips
 This is a MIPS processor implementation that we are building as a final project in our 6th semester at the GUC for the Computer System Architecture course (CSEN601).
 
@@ -16,7 +17,7 @@ The processor should support the following MIPS instructions only:
 - **Comparison:** slt, sltu
 
 
-**Project Deadline:** Saturday ***April 28th,*** 2018. Evaluations will take place immediately afterwards.
+**Project Deadline:** Friday ***April 4th,*** 2018. Evaluations will take place immediately afterwards.
 
 ### Authors
 - **Shadi Barghash**
