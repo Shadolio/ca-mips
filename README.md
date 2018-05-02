@@ -24,3 +24,7 @@ The processor should support the following MIPS instructions only:
 - **Abdelrahman Tarek**
 - **Anwar Labib**
 - **Daniel Achraf**
+
+## Get started
+
+['mips_proc'](mips_proc.v) is the module where all components are connected together and provided with the universal clock.
