@@ -104,8 +104,6 @@ module mips_proc ();
 	assign pcSrc = branch_E & aluZero;
 	assign pcNext = pcSrc ? pcOffsetNextInst_E : pcPlus4_F;
 
-	//mux_01x_32 pcNext_Mux (pcNext, pcPlus4_F, pcOffsetNextInst_E, pcPlus4_F, pcSrc);
-
 	assign instrAddr = (initializing == 0) ? pcValue : (initializing == 1) ? initInstrAddr : 32'dx;
 
 	// INSTRUCTION DECODE
@@ -210,7 +208,7 @@ module mips_proc ();
 	// Program initialising and tracking
 	// HERE -- CHANGE IFF (MEMORY SIZE) OR (TEST PROGRAM SPECIFIED IN initial BLOCK BELOW "Main()") CHANGE.
 	// -----------------------------------
-	parameter programLength = 5'd08;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
+	parameter programLength = 5'd10;		// NUMBER OF INSTRUCTIONS OF TEST PROGRAM TO LOAD
 	reg [31:0] program [programLength - 1 : 0];
 	reg [4:0] instrI;
 
@@ -232,7 +230,7 @@ module mips_proc ();
 		// HERE IS THE TEST PROGRAM TO LOAD
 		// Put program instructions in a temp array, to be loaded to Instruction Memory by a loop.
 
-		program[0] <= 32'h20110005; // addi $17, $0, 5
+		/*program[0] <= 32'h20110005; // addi $17, $0, 5
 		program[1] <= 32'h20100002; // addi $16, $0, 2
 		program[2] <= 32'h2012fffd; // addi $18, $0, -3
 		program[3] <= 32'hac000005; // sw $0, 5($0)
@@ -240,9 +238,9 @@ module mips_proc ();
 		program[5] <= 32'h00119842; // srl $19, $17, 1
 		program[6] <= 32'h02304822; // sub $9, $17, $16
 		program[7] <= 32'h0000000c; // syscall #end program
-
+*/
 		// testProg_beq_noFwd (now with FWD)
-		/*program[0] <= 32'h20100005;	// addi $16, $0, 5
+		program[0] <= 32'h20100005;	// addi $16, $0, 5
 		program[1] <= 32'h12000006;	// beq $16, $0, 0x6
 		program[2] <= 32'h00000000;	// nop
 		program[3] <= 32'h00000000;	// nop
@@ -252,7 +250,7 @@ module mips_proc ();
 		program[7] <= 32'h00000000;	// nop
 		program[8] <= 32'h2002000a;	// addi $2, $0, 10
 		program[9] <= 32'h0000000c;	// syscall
-		*/
+		
 
 		// ------------------------------------------------------
 		// REMEMBER TO UPDATE THE PARAMETER ABOVE WITH THE NUMBER OF INSTRUCTIONS IN THE PROGRAM
