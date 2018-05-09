@@ -6,7 +6,7 @@ At the end of the project, we were expected to have (1) an implementation of a p
 
 However, we started with a single-cycle implementation (without pipelining,) to make sure the components were working well, then we added pipeline registers to allow pipelining.
 
-This project was implemented in **Verilog,** and used ModelSim Altera to do the simulation.
+This project was implemented in **Verilog.** We used **ModelSim Altera** to simulate the full processor, and **JDoodle** to edit some of the component modules at the beginning.
 
 #### Dates
 
