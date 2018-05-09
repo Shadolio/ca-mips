@@ -1,15 +1,23 @@
 
 # ca-mips
-This is a MIPS processor implementation that we are building as a final project in our 6th semester at the GUC for the Computer System Architecture course (CSEN601).
+This is a MIPS processor that we implemented as a final project for the Computer System Architecture course (CSEN601), that we take in our 6th semester of Computer Science and Engineering study at the GUC.
 
-At the end of the project, we should (1) have an implementation of a pipelined MIPS processor, and (2) be able to test/simulate it with actual machine code instructions converted from MIPS assembly.
+At the end of the project, we were expected to have (1) an implementation of a pipelined MIPS processor, and (2) be able to test/simulate it with actual machine code instructions converted from MIPS assembly. Both objectives were reached.
 
-However, we started with a single-cycle implementation (without pipelining,) to make sure the components were working well, then we added pipeline registers to allow pipelining. For the time being, we are not handling data hazards nor doing branch prediction; these are bonus tasks, that we would do if we have enough time.
+However, we started with a single-cycle implementation (without pipelining,) to make sure the components were working well, then we added pipeline registers to allow pipelining.
 
-We are implementing this project in **Verilog.**
+This project was implemented in **Verilog,** and used ModelSim Altera to do the simulation.
+
+
+**Project Deadline:** Friday, ***May 4th,*** 2018.
+
+**Project Submitted:** Wednesday, ***May 2nd,*** 2018.
+
+**Project Evaluated:** Monday, ***May 7th,*** 2018.
+
 
 ### Instruction set architecture (ISA)
-The processor should support the following MIPS instructions only:
+The processor had to support the following MIPS instructions only:
 - **Arithmetic:** add, sub, addi
 - **Load/Store:** lw, sw, lh, lhu
 - **Logic:** and, or, sll, srl, nor
@@ -17,13 +25,12 @@ The processor should support the following MIPS instructions only:
 - **Comparison:** slt, sltu
 
 
-**Project Deadline:** Friday ***April 4th,*** 2018. Evaluations will take place immediately afterwards.
-
 ### Authors
 - **Shadi Barghash**
 - **Abdelrahman Tarek**
 - **Anwar Labib**
 - **Daniel Achraf**
+
 
 ## Get started
 
