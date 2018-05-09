@@ -35,15 +35,15 @@ The processor had to support the following MIPS instructions only:
 It can be considered as the test bench that simulates all of the components and the connections together.
 
 ### Architecture
-The main processor module is designed Structural; we had a diagram, and we declared wires, used *assign* statements, and declared instances of the components, linking them to our wires and regs.
+The main processor module is designed Structural; we had a diagram, and we declared wires, used `assign` statements, and declared instances of the components, linking them to our wires and regs.
 
 #### Remarks
 
 1. ALU-ALU forwarding and Full forwarding (MEM-ALU) are implemented, so you shall place one **nop** instruction only for the latter one, and none at all for the earlier one.
 
-2. No branch prediction is implemented, so you have to place **nop**s after a **beq** instruction to make sure the correct next instruction is fetched and executed.
+2. No branch prediction is implemented, so you have to place **nop**'s after a **beq** instruction to make sure the correct next instruction is fetched and executed.
 
-3. Branch result is decided in the Execute stage, so you would need to waste 2 clock cycles only, with two **nop**s, instead of three.
+3. Branch result is decided in the Execute stage, so you would need to waste 2 clock cycles only, with two **nop**'s, instead of three.
 
 > In the diagram, the branch result was decided in the Memory stage. However, we believe that in our simulation, the reason for doing so is not present, and so we decided to reduce the waste of clock cycles and the size of the program.
 
