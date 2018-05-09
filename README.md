@@ -8,12 +8,13 @@ However, we started with a single-cycle implementation (without pipelining,) to 
 
 This project was implemented in **Verilog,** and used ModelSim Altera to do the simulation.
 
+#### Dates
 
-**Project Deadline:** Friday, ***May 4th,*** 2018.
+**Deadline:** Friday, ***May 4th,*** 2018.
 
-**Project Submitted:** Wednesday, ***May 2nd,*** 2018.
+**Submission:** Wednesday, ***May 2nd,*** 2018.
 
-**Project Evaluated:** Monday, ***May 7th,*** 2018.
+**Evaluation:** Monday, ***May 7th,*** 2018.
 
 
 ### Instruction set architecture (ISA)
